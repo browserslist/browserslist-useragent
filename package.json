@@ -1,0 +1,21 @@
+{
+  "name": "browserslist-useragent",
+  "version": "0.0.1",
+  "description": "A utility to match a browselist query to browser user agents",
+  "main": "index.js",
+  "repository": "https://github.com/pastelsky/browserlist-useragent",
+  "author": "Shubham Kanodia <shubham.kanodia10@gmail.com>",
+  "license": "MIT",
+  "files": ["./index.js"],
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "browserslist": "^2.5.1",
+    "semver": "^5.4.1",
+    "useragent": "^2.2.1"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1"
+  }
+}
