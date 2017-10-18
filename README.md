@@ -1,5 +1,10 @@
 Checks if the given user agent string satisfies a  browserlist query.
 
+## Installation
+```bash
+npm install browserlist-useragent
+```
+
 ## Usage
 ```js
 const matchUA = require('browserlist-useragent')
