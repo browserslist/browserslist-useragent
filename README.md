@@ -11,7 +11,6 @@ const matchUA = require('browserlist-useragent')
 matchUA(userAgentString, browslistQuery, options)
 ```
 
-
 ## Example
 ```js
 const matchUA = require('browserlist-useragent')
