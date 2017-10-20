@@ -22,7 +22,7 @@ matchUA(uaString, ['Explorer >= 10'])
 
 ## Options
  - `ignoreMinor` (default: `false`) - Ignore differences in minor browser version
- - `ignoreMinor` (default: `true`) - Ignore differences in patch browser versions
+ - `ignorePatch` (default: `true`) - Ignore differences in patch browser versions
  - `allowHigherVersions` (default: `false`) - Returns a match even if the browser version in user agent string is more than those specified in the browserlist query. This option can be helpful when targeting unreleased browsers or browsers for which the `caniuse-lite` database hasn'nt yet been updated.  
 
  
