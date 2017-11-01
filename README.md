@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/browserslist-useragent.svg)]()
 
 <img align="right" width="120" height="120"
-     src="https://github.com/pastelsky/browserslist-useragent/raw/master/logo.svg" alt="Browserslist Useragent logo (original by Anton Lovchikov)" />
+     src="https://cdn.rawgit.com/pastelsky/browserslist-useragent/master/logo.svg" alt="Browserslist Useragent logo (original by Anton Lovchikov)" />
      
 
 Find if a given user agent string satisfies a [browserslist](https://github.com/ai/browserslist) query. 
