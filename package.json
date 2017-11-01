@@ -2,7 +2,7 @@
   "name": "browserslist-useragent",
   "version": "0.0.2",
   "description": "A utility to match a browselist query to browser user agents",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/pastelsky/browserlist-useragent",
   "author": "Shubham Kanodia <shubham.kanodia10@gmail.com>",
   "license": "MIT",
@@ -10,14 +10,25 @@
     "./index.js"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "yarn run build",
+    "build": "babel index.js --out-file lib/index.js"
   },
   "dependencies": {
     "browserslist": "^2.5.1",
+    "object.assign": "^4.0.4",
     "semver": "^5.4.1",
     "useragent": "^2.2.1"
   },
   "devDependencies": {
-    "jest": "^21.2.1"
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "jest": "^21.2.1",
+    "useragent-generator": "^1.0.3"
+  },
+  "jest": {
+    "projects": [
+      "<rootDir>/external-browserlists/package-json"
+    ]
   }
 }

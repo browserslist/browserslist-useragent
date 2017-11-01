@@ -4,23 +4,8 @@ const useragent = require('useragent')
 
 // @see https://github.com/ai/browserslist#browsers
 
-// The Ideal map would be this, but we
-// cant use it due to https://github.com/ai/browserslist/issues/156
-/*
-const browserNameMap = {
-  bb: 'BlackBerry',
-  and_chr: 'ChromeAndroid',
-  and_ff: 'ChromeAndroid',
-  ie: 'Explorer',
-  ie_mob: 'ExplorerMobile',
-  ff: 'Firefox',
-  ios_saf: 'iOS',
-  op_mini: 'OperaMini',
-  op_mob: 'OperaMobile',
-  and_qq: 'QQAndroid',
-  and_uc: 'UCAndroid',
-}
-*/
+// map of equivalent browsers,
+// see https://github.com/ai/browserslist/issues/156
 
 const browserNameMap = {
   bb: 'BlackBerry',
@@ -39,8 +24,29 @@ const browserNameMap = {
 }
 
 function resolveUserAgent(uaString) {
-  const parsedUA = useragent.parse(uaString)
+  // Chrome and Opera on iOS uses a UIWebView of the underlying platform to render
+  // content, by stripping the CriOS or OPiOS strings the useragent parser will alias the
+  // user agent to ios_saf for the UIWebView, which is closer to the actual
+  // renderer
+  // @see https://github.com/Financial-Times/polyfill-service/pull/416
 
+  const strippedUA = uaString.replace(/((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/, '');
+  const parsedUA = useragent.parse(strippedUA)
+
+  // Case A: For Safari, Chrome and others browsers
+  // that report as Safari after stripping tags
+  if (parsedUA.family.indexOf('Safari') > -1) {
+    return {
+      family: 'iOS',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
+  // Case B: The browser on iOS didn't report as safari,
+  // so we use the iOS version as a proxy to the browser
+  // version. This is based on the assumption that the
+  // underlying Safari Engine used will be *atleast* equal
+  // to the iOS version it's running on.
   if (parsedUA.os.family === 'iOS') {
     return {
       family: 'iOS',
@@ -49,12 +55,22 @@ function resolveUserAgent(uaString) {
     }
   }
 
-  // This should ideally be parsed to ChromeAndroid, but due to this bug
-  // https://github.com/ai/browserslist/issues/156
-  // we use Chrome instead. Anyways, they are in-sync
+  // Case C: The caniuse database does not contain
+  // historical browser versions for so called `minor`
+  // browsers like Chrome for Android, Firefox for Android etc
+  // In this case, we proxy to the desktop version
+  // @see https://github.com/Fyrd/caniuse/issues/3518
+
   if (parsedUA.family.indexOf('Chrome Mobile') > -1) {
     return {
       family: 'Chrome',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
+  if (parsedUA.family === 'Firefox Mobile') {
+    return {
+      family: 'Firefox',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
     }
   }
@@ -73,27 +89,11 @@ function resolveUserAgent(uaString) {
     }
   }
 
-
-  // This should ideally be parsed to FirefoxAndroid, but due to this bug
-  // https://github.com/ai/browserslist/issues/156
-  // we use Firefox instead. Anyways, they are in-sync
-  if (parsedUA.family === 'Firefox Mobile') {
-    return {
-      family: 'Firefox',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
   return {
     family: parsedUA.family,
     version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
   }
 }
-
-const validBrowserslistTargets = [
-  ...Object.keys(browserslist.data),
-  ...Object.keys(browserslist.aliases),
-]
 
 // Convert version to a semver value.
 // 2.5 -> 2.5.0; 1 -> 1.0.0;
@@ -111,9 +111,17 @@ const semverify = (version) => {
   return split.join('.')
 }
 
-const semverMin = (first, second) =>
-  (first && semver.lt(first, second) ? first : second)
+function normalizeQuery(query) {
+  let normalizedQuery = query
+  const regex = `(${Object.keys(browserNameMap).join('|')})`
+  const match = query.match(new RegExp(regex))
 
+  if (match) {
+    normalizedQuery = query.replace(match[0], browserNameMap[match[0]])
+  }
+
+  return normalizedQuery
+}
 
 const parseBrowsersList = (browsersList) => {
   return browsersList.map(browser => {
@@ -126,7 +134,6 @@ const parseBrowsersList = (browsersList) => {
       normalizedName = browserNameMap[browserName]
     }
 
-    // TODO: Needed?
     try {
       // Browser version can return as "10.0-10.2"
       const splitVersion = browserVersion.split('-')[0]
@@ -140,30 +147,6 @@ const parseBrowsersList = (browsersList) => {
   })
 }
 
-const getLowestVersions = browsers =>
-  browsers.reduce((all, browser) => {
-    const [browserName, browserVersion] = browser.split(' ')
-    const normalizedBrowserName = browserNameMap[browserName]
-
-    if (!normalizedBrowserName) {
-      return all
-    }
-
-    try {
-      // Browser version can return as "10.0-10.2"
-      const splitVersion = browserVersion.split('-')[0]
-      const parsedBrowserVersion = semverify(splitVersion)
-
-      // eslint-disable-next-line no-param-reassign
-      all[normalizedBrowserName] = semverMin(
-        all[normalizedBrowserName],
-        parsedBrowserVersion,
-      )
-    } catch (e) {}
-
-    return all
-  }, {})
-
 const compareBrowserSemvers = (versionA, versionB, options) => {
   let referenceVersion = versionB
 
@@ -175,16 +158,19 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
     referenceVersion = `^${versionB}`
   }
 
-  if (options.allowHigherVersions) {
+  if (options._allowHigherVersions) {
     return semver.gte(versionA, versionB)
   } else {
     return semver.satisfies(versionA, referenceVersion)
   }
 }
 
-const matchesUA = (uaString, browserlistQuery, opts) => {
-  // Parse browsers target via browserslist;
-  const browsers = browserslist(browserlistQuery, { path: process.cwd() })
+const matchesUA = (uaString, opts) => {
+  let normalizedQuery
+  if (opts && opts.browsers) {
+    normalizedQuery = opts.browsers.map(normalizeQuery)
+  }
+  const browsers = browserslist(normalizedQuery, { path: process.cwd() })
   const parsedBrowsers = parseBrowsersList(browsers)
   const resolvedUserAgent = resolveUserAgent(uaString)
 
@@ -205,5 +191,6 @@ const matchesUA = (uaString, browserlistQuery, opts) => {
 module.exports = {
   matchesUA,
   resolveUserAgent,
+  normalizeQuery,
 }
 

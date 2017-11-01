@@ -1,48 +1,50 @@
-const userAgents = {
-  SAFARI_IOS: 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
-  SAFARI_IOS_9: 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
-  SAFARI_IOS_WEBVIEW: 'User-Agent: Mozilla/5.0 (iPad; U; CPU OS 4_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Mobile',
+const ua = require('useragent-generator')
 
-  ANDROID_WEBVIEW_OLD: 'Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30',
-  ANDROID_CHROME_WEBVIEW_OLD: 'Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36',
-  ANDROID_CHROME_WEBVIEW_NEW: 'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36',
-  ANDROID_CHROME_57: 'Mozilla/5.0 (Linux; Android 7.1.1; Moto E (4) Plus Build/NDR26.58-21) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Mobile Safari/537.36',
-  ANDROID_CHROME_64: 'Mozilla/5.0 (Linux; Android 7.1.1; Moto E (4) Plus Build/NDR26.58-21) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.2987.132 Mobile Safari/537.36',
-  CHROME_DESKTOP: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
-  CHROME_IOS: 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
+const { resolveUserAgent, matchesUA, normalizeQuery } = require('../index')
 
-  IE: 'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko',
-  IE_MOBILE: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; HTC; Windows Phone 8X by HTC)',
-  EDGE: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393',
+it('normalizes queries properly', () => {
+  expect(normalizeQuery('and_chr >= 61'))
+    .toBe('Chrome >= 61')
 
-  FIREFOX_MOBILE_ANDROID: 'Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0',
-  FIREFOX_MOBILE_ANDROID_52: 'Mozilla/5.0 (Android 4.4.2; Mobile; rv:52.0) Gecko/52.0 Firefox/52.0',
-  FIREFOX_MOBILE_IOS: 'Mozilla/5.0 (iPod touch; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) FxiOS/1.0 Mobile/12F69 Safari/600.1.4',
-  FIRFOX_DESKTOP: 'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:10.0) Gecko/20100101 Firefox/10.0',
-}
+  expect(normalizeQuery('ChromeAndroid >= 61'))
+    .toBe('Chrome >= 61')
 
-const { resolveUserAgent, matchesUA } = require('../index')
+  expect(normalizeQuery('FirefoxAndroid < 54'))
+    .toBe('Firefox < 54')
+
+  expect(normalizeQuery('ff < 54'))
+    .toBe('Firefox < 54')
+
+  expect(normalizeQuery('ios_saf < 10.1.0'))
+    .toBe('iOS < 10.1.0')
+
+  expect(normalizeQuery('last 10 and_chr versions'))
+    .toBe('last 10 Chrome versions')
+
+  expect(normalizeQuery('>= 5%'))
+    .toBe('>= 5%')
+})
 
 it('resolves all browsers in iOS to safari with correct platform version', () => {
-  expect(resolveUserAgent(userAgents.CHROME_IOS))
+  expect(resolveUserAgent(ua.chrome.iOS('10.3.0')))
     .toEqual({
       family: 'iOS',
       version: '10.3.0',
     })
 
-  expect(resolveUserAgent(userAgents.SAFARI_IOS))
+  expect(resolveUserAgent(ua.firefox.iOS('10.3.0')))
     .toEqual({
       family: 'iOS',
       version: '10.3.0',
     })
 
-  expect(resolveUserAgent(userAgents.SAFARI_IOS_WEBVIEW))
+  expect(resolveUserAgent(ua.safari.iOSWebview('10.3.0')))
     .toEqual({
       family: 'iOS',
-      version: '4.3.0',
+      version: '10.3.0',
     })
 
-  expect(resolveUserAgent(userAgents.FIREFOX_MOBILE_IOS))
+  expect(resolveUserAgent(ua.safari.iOS('8.3.0')))
     .toEqual({
       family: 'iOS',
       version: '8.3.0',
@@ -50,78 +52,85 @@ it('resolves all browsers in iOS to safari with correct platform version', () =>
 })
 
 it('resolves IE/Edge properly', () => {
-  expect(resolveUserAgent(userAgents.IE))
+  expect(resolveUserAgent(ua.ie('11.0.0')))
     .toEqual({
       family: 'Explorer',
       version: '11.0.0',
     })
 
-  expect(resolveUserAgent(userAgents.IE_MOBILE))
+  expect(resolveUserAgent(ua.ie.windowsPhone('10.0.0')))
     .toEqual({
       family: 'ExplorerMobile',
       version: '10.0.0',
     })
 
 
-  expect(resolveUserAgent(userAgents.EDGE))
+  expect(resolveUserAgent(ua.edge('14.1.0')))
     .toEqual({
       family: 'Edge',
-      version: '14.14393.0',
+      version: '14.1.0',
     })
 })
 
-it('resolves chrome properly', () => {
-  expect(resolveUserAgent(userAgents.CHROME_DESKTOP))
+it('resolves chrome/android properly', () => {
+  expect(resolveUserAgent(ua.chrome('41.0.228.90')))
     .toEqual({
       family: 'Chrome',
-      version: '41.0.2228',
+      version: '41.0.228',
     })
 
-  expect(resolveUserAgent(userAgents.ANDROID_CHROME_WEBVIEW_NEW))
-    .toEqual({
-      family: 'Chrome',
-      version: '43.0.2357',
-    })
-
-  expect(resolveUserAgent(userAgents.ANDROID_CHROME_WEBVIEW_OLD))
-    .toEqual({
-      family: 'Chrome',
-      version: '30.0.0',
-    })
-
-  expect(resolveUserAgent(userAgents.ANDROID_WEBVIEW_OLD))
+  expect(resolveUserAgent(ua.chrome.androidWebview('2.3.3')))
     .toEqual({
       family: 'Android',
-      version: '4.1.1',
+      version: '2.3.3',
+    })
+
+  expect(resolveUserAgent(
+    ua.chrome.androidWebview({
+      androidVersion: '4.4.1', chromeVersion: '44.0.0',
+    }),
+  ))
+    .toEqual({
+      family: 'Chrome',
+      version: '44.0.0',
+    })
+
+  expect(resolveUserAgent(
+    ua.chrome.androidWebview({
+      androidVersion: '6.0.0', chromeVersion: '60.0.0',
+    }),
+  ))
+    .toEqual({
+      family: 'Chrome',
+      version: '60.0.0',
     })
 })
 
-
 it('resolves firefox properly', () => {
-  expect(resolveUserAgent(userAgents.FIREFOX_MOBILE_ANDROID))
+  expect(resolveUserAgent(ua.firefox('41.0.0')))
     .toEqual({
       family: 'Firefox',
       version: '41.0.0',
     })
 
-  expect(resolveUserAgent(userAgents.FIRFOX_DESKTOP))
+  expect(resolveUserAgent(ua.firefox.androidPhone('44.0.0')))
     .toEqual({
       family: 'Firefox',
-      version: '10.0.0',
+      version: '44.0.0',
     })
 })
 
 it('detects if browserlist matches UA', () => {
-  expect(matchesUA(userAgents.FIREFOX_MOBILE_ANDROID, ['Firefox >= 40']))
+  expect(matchesUA(ua.firefox.androidPhone('40.0.1'), { browsers: ['Firefox >= 40'] }))
     .toBeTruthy()
 
-  expect(matchesUA(userAgents.FIRFOX_DESKTOP, ['Firefox >= 10.0.0']))
+  expect(matchesUA(ua.firefox('30.0.0'), { browsers: ['Firefox >= 10.0.0'] }))
     .toBeTruthy()
 
-  expect(matchesUA(userAgents.CHROME_IOS, ['iOS >= 10.3.0']))
+  expect(matchesUA(ua.chrome.iOS('11.0.0'), { browsers: ['iOS >= 10.3.0'] }))
     .toBeTruthy()
 
-  expect(matchesUA(userAgents.SAFARI_IOS, ['iOS >= 10.3.0']))
+  expect(matchesUA(ua.safari.iOS('11.0.0'), { browsers: ['iOS >= 10.3.0'] }))
     .toBeTruthy()
 
   const modernList = [
@@ -131,18 +140,76 @@ it('detects if browserlist matches UA', () => {
     "iOS >= 10",
   ]
 
-  expect(matchesUA(userAgents.SAFARI_IOS_9, modernList))
+  expect(matchesUA(ua.safari.iOS(9), { browsers: modernList }))
     .toBeFalsy()
 
-  expect(matchesUA(userAgents.ANDROID_CHROME_57, modernList))
+  expect(matchesUA(ua.chrome.androidPhone(57),  { browsers: modernList }))
     .toBeFalsy()
 
-  expect(matchesUA(userAgents.FIREFOX_MOBILE_ANDROID_52, modernList))
+  expect(matchesUA(ua.firefox.androidPhone(52),  { browsers: modernList }))
     .toBeFalsy()
 
-  expect(matchesUA(userAgents.EDGE, modernList))
+  expect(matchesUA(ua.edge(14),  { browsers: modernList }))
     .toBeFalsy()
 
-  expect(matchesUA(userAgents.ANDROID_CHROME_64, modernList, { allowHigherVersions: true }))
+  expect(matchesUA(ua.chrome(64),  { browsers: modernList }))
+    .toBeFalsy()
+
+  expect(matchesUA(ua.chrome.androidWebview('4.3.3'),  { browsers: modernList }))
+    .toBeFalsy()
+})
+
+it('can interpret various variations in specifying browser names', () => {
+  expect(matchesUA(ua.chrome(49), { browsers: ['and_chr >= 49'] }))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.safari.iOS('10.3.0'), { browsers: ['ios_saf >= 10.1.0'] }))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.safari('10.3.0'), { browsers: ['ios_saf >= 10.1.0'] }))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.firefox.androidPhone('46.0.0'), { browsers: ['FirefoxAndroid >= 41.1.0'] }))
+    .toBeTruthy()
+})
+
+it('ignorePatch option works correctly', () => {
+  expect(matchesUA(ua.firefox('49.0.1'), { browsers: ['ff >= 44'] , ignorePatch: false }))
+    .toBeFalsy()
+
+  expect(matchesUA(ua.firefox('49.0.1'), { browsers: ['ff >= 44'] , ignorePatch: true }))
+    .toBeTruthy()
+
+  expect(
+    matchesUA(
+      ua.firefox('49.1.1'),
+      { browsers: ['ff >= 44'] , ignorePatch: true, ignoreMinor: false },
+    ),
+  )
+    .toBeFalsy()
+})
+
+it('ignoreMinor option works correctly', () => {
+  expect(matchesUA(ua.firefox('49.1.0'), { browsers: ['ff >= 44'], ignoreMinor: false }))
+    .toBeFalsy()
+
+  expect(matchesUA(ua.firefox('49.1.0'), { browsers: ['ff >= 44'], ignoreMinor: true }))
+    .toBeTruthy()
+
+  expect(
+    matchesUA(
+      ua.firefox('49.1.3'),
+      { browsers: ['ff >= 44'], ignoreMinor: true, ignorePatch: false },
+    ),
+  )
+    .toBeTruthy()
+})
+
+
+it('_allowHigherVersions works correctly', () => {
+  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], _allowHigherVersions: false }))
+    .toBeFalsy()
+
+  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], _allowHigherVersions: true }))
     .toBeTruthy()
 })

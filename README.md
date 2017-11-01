@@ -1,4 +1,14 @@
-Checks if the given user agent string satisfies a  browserlist query.
+# Browserlist Useragent
+[![Travis](https://img.shields.io/travis/pastelsky/browserlist-useragent.svg)]()
+[![npm](https://img.shields.io/npm/v/browserlist-useragent.svg)]()
+
+<img align="right" width="120" height="120"
+     src="./logo.svg" alt="Browserslist Useragent logo (original by Anton Lovchikov)" />
+     
+
+Find if a given user agent string satisfies a browserlist query. 
+It automatically reads browserslist configuration specified in your project, 
+but you can optionally specify the same using the options field.
 
 ## Installation
 ```bash
@@ -7,22 +17,32 @@ npm install browserlist-useragent
 
 ## Usage
 ```js
-const matchUA = require('browserlist-useragent')
-matchUA(userAgentString, browslistQuery, options)
+const { matchesUA } = require('browserlist-useragent')
+matchUA(userAgentString, options)
 ```
 
-## Example
-```js
-const matchUA = require('browserlist-useragent')
-const uaString = 'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
+| Option | Default Value | Description |
+|--------|---------------|------------ |
+| browsers | — | Manually provide a browserslist query (or an array of queries). Specifying this overrides the browserslist configuration specified in your project. |
+| ignorePatch | `true` | Ignore differences in patch browser numbers |
+| ignoreMinor | `false` | Ignore differences in minor browser versions |
 
-matchUA(uaString, ['Explorer >= 10'])
-// returns true
-```
-
-## Options
- - `ignoreMinor` (default: `false`) - Ignore differences in minor browser version
- - `ignoreMinor` (default: `true`) - Ignore differences in patch browser versions
- - `allowHigherVersions` (default: `false`) - Returns a match even if the browser version in user agent string is more than those specified in the browserlist query. This option can be helpful when targeting unreleased browsers or browsers for which the `caniuse-lite` database hasn'nt yet been updated.  
-
+## Supported browsers
+ - Chrome
+ - Firefox
+ - Safari
+ - IE
+ - Edge
  
+ PRs to add more _browserslist supported_ browsers are welcome 👋
+ 
+## Notes
+ - All browsers on iOS (Chrome, Firefox etc) use Safari as the underlying engine, and hence will be resolved to Safari. Since `browserlist` is usually used for
+  transpiling / autoprefixing for browsers, this behaviour is what's intended in most cases, but might surprise you otherwise.
+  
+ - Right now, Chrome for Android and Firefox for Android are resolved to their desktop equivalents. The `caniuse` database does not currently store historical data for these browsers separately (except the last version) See [#156](https://github.com/ai/browserslist/issues/156)
+
+## When querying for modern browsers
+ - It is a good idea to update this package often so that browser definitions are upto date. 
+ - It is also a good idea to add `unreleased versions` to your browserslist query, and set `ignoreMinor` and `ignorePatch` to true so that alpha / beta / canary versions of browsers are matched.
+ - In case you're unable to keep this package up-to-date, you can set the `_allowHigherVersions` to `true`. For all the browsers specified in your browserslist query, this will return a match if the user agent version is equal to or higher than those specified in your browserlist query. Use this with care though, since it's a wildcard, and only lightly tested. 
