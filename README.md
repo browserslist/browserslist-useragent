@@ -7,8 +7,9 @@
      
 
 Find if a given user agent string satisfies a [browserslist](https://github.com/ai/browserslist) query. 
-It automatically reads browserslist configuration specified in your project, 
-but you can optionally specify the same using the options field.
+
+It automatically reads the browserslist configuration specified in your project, 
+but you can also specify the same using the `options` parameter.
 
 ## Installation
 ```bash
