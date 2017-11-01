@@ -18,7 +18,11 @@ npm install browserlist-useragent
 ## Usage
 ```js
 const { matchesUA } = require('browserlist-useragent')
-matchUA(userAgentString, options)
+matchesUA(userAgentString, options)
+
+// example
+matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', { browsers: ['Firefox > 53']})
+// returns true
 ```
 
 | Option | Default Value | Description |
