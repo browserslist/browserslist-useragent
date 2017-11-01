@@ -7,7 +7,7 @@
   "author": "Shubham Kanodia <shubham.kanodia10@gmail.com>",
   "license": "MIT",
   "files": [
-    "./index.js"
+    "./lib/index.js"
   ],
   "scripts": {
     "test": "jest",
