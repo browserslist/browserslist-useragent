@@ -1,6 +1,6 @@
 # Browserlist Useragent
-[![Travis](https://img.shields.io/travis/pastelsky/browserlist-useragent.svg)]()
-[![npm](https://img.shields.io/npm/v/browserlist-useragent.svg)]()
+[![Travis](https://img.shields.io/travis/pastelsky/browserslist-useragent.svg)]()
+[![npm](https://img.shields.io/npm/v/browserslist-useragent.svg)]()
 
 <img align="right" width="120" height="120"
      src="./logo.svg" alt="Browserslist Useragent logo (original by Anton Lovchikov)" />
@@ -12,12 +12,12 @@ but you can optionally specify the same using the options field.
 
 ## Installation
 ```bash
-npm install browserlist-useragent
+npm install browserslist-useragent
 ```
 
 ## Usage
 ```js
-const { matchesUA } = require('browserlist-useragent')
+const { matchesUA } = require('browserslist-useragent')
 matchesUA(userAgentString, options)
 
 // example
