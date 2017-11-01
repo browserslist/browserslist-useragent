@@ -42,7 +42,7 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
  PRs to add more _browserslist supported_ browsers are welcome 👋
  
 ## Notes
- - All browsers on iOS (Chrome, Firefox etc) use Safari as the underlying engine, and hence will be resolved to Safari. Since `browserslist` is usually used for
+ - All browsers on iOS (Chrome, Firefox etc) use Safari's WebKit as the underlying engine, and hence will be resolved to Safari. Since `browserslist` is usually used for
   transpiling / autoprefixing for browsers, this behaviour is what's intended in most cases, but might surprise you otherwise.
   
  - Right now, Chrome for Android and Firefox for Android are resolved to their desktop equivalents. The `caniuse` database does not currently store historical data for these browsers separately (except the last version) See [#156](https://github.com/ai/browserslist/issues/156)
