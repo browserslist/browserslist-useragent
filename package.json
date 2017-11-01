@@ -28,7 +28,7 @@
   },
   "jest": {
     "projects": [
-      "<rootDir>/external-browserlists/package-json"
+      "<rootDir>/external-browserslists/package-json"
     ]
   }
 }

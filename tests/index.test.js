@@ -120,7 +120,7 @@ it('resolves firefox properly', () => {
     })
 })
 
-it('detects if browserlist matches UA', () => {
+it('detects if browserslist matches UA', () => {
   expect(matchesUA(ua.firefox.androidPhone('40.0.1'), { browsers: ['Firefox >= 40'] }))
     .toBeTruthy()
 
