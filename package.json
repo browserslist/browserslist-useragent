@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "browserslist": "^2.5.1",
-    "object.assign": "^4.0.4",
     "semver": "^5.4.1",
     "useragent": "^2.2.1"
   },
