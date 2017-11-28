@@ -15,7 +15,7 @@
     "build": "babel index.js --out-file lib/index.js"
   },
   "dependencies": {
-    "browserslist": "^2.5.1",
+    "browserslist": "^2.9.1",
     "semver": "^5.4.1",
     "useragent": "^2.2.1"
   },
