@@ -170,7 +170,10 @@ const matchesUA = (uaString, opts) => {
   if (opts && opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
   }
-  const browsers = browserslist(normalizedQuery, { path: process.cwd() })
+  const browsers = browserslist(normalizedQuery, {
+    env: opts.env,
+    path: process.cwd()
+  })
   const parsedBrowsers = parseBrowsersList(browsers)
   const resolvedUserAgent = resolveUserAgent(uaString)
 
