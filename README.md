@@ -29,6 +29,7 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 | Option | Default Value | Description |
 |--------|---------------|------------ |
 | browsers | — | Manually provide a browserslist query (or an array of queries). Specifying this overrides the browserslist configuration specified in your project. |
+| env | — | When multiple browserslist [enviroments](https://github.com/ai/browserslist#environments) are specified, pick the config belonging to this environment.|
 | ignorePatch | `true` | Ignore differences in patch browser numbers |
 | ignoreMinor | `false` | Ignore differences in minor browser versions |
 
