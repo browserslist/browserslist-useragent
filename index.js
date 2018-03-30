@@ -35,7 +35,7 @@ function resolveUserAgent(uaString) {
 
   // Case A: For Safari, Chrome and others browsers
   // that report as Safari after stripping tags
-  if (parsedUA.family.indexOf('Safari') > -1) {
+  if (parsedUA.family.includes('Safari')) {
     return {
       family: 'iOS',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
@@ -61,7 +61,14 @@ function resolveUserAgent(uaString) {
   // In this case, we proxy to the desktop version
   // @see https://github.com/Fyrd/caniuse/issues/3518
 
-  if (parsedUA.family.indexOf('Chrome Mobile') > -1) {
+  if (parsedUA.family.includes('Chrome Mobile')) {
+    return {
+      family: 'Chrome',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
+  if (parsedUA.family.includes('Chromium')) {
     return {
       family: 'Chrome',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
