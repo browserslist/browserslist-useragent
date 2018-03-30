@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "jest",
-    "prepublish": "yarn run build",
+    "prepublish": "npm run build",
     "build": "babel index.js --out-file lib/index.js"
   },
   "dependencies": {
