@@ -153,7 +153,7 @@ it('detects if browserslist matches UA', () => {
     .toBeFalsy()
 
   expect(matchesUA(ua.chrome(64),  { browsers: modernList }))
-    .toBeFalsy()
+    .toBeTruthy()
 
   expect(matchesUA(ua.chrome.androidWebview('4.3.3'),  { browsers: modernList }))
     .toBeFalsy()
