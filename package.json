@@ -15,7 +15,7 @@
     "build": "mkdir -p lib && babel index.js --out-file lib/index.js"
   },
   "dependencies": {
-    "browserslist": "^2.9.1",
+    "browserslist": "^3.2.4",
     "semver": "^5.4.1",
     "useragent": "^2.2.1"
   },
@@ -23,7 +23,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "jest": "^21.2.1",
+    "jest": "^22.4.3",
     "useragent-generator": "^1.0.3"
   },
   "jest": {
