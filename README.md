@@ -1,7 +1,6 @@
 # Browserslist Useragent
 
 [![Travis](https://img.shields.io/travis/pastelsky/browserslist-useragent.svg)](https://travis-ci.org/pastelsky/browserslist-useragent)
-
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/browserslist-useragent)
 
 <img align="right" width="120" height="120"
