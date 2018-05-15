@@ -106,6 +106,14 @@ it('resolves chrome/android properly', () => {
     })
 })
 
+it('resolves headless chrome properly', () => {
+  expect(resolveUserAgent(ua.chrome('41.0.228.90').replace('Chrome', 'HeadlessChrome')))
+    .toEqual({
+      family: 'Chrome',
+      version: '41.0.228',
+    })
+})
+
 it('resolves firefox properly', () => {
   expect(resolveUserAgent(ua.firefox('41.0.0')))
     .toEqual({

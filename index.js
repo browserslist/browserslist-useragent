@@ -68,6 +68,13 @@ function resolveUserAgent(uaString) {
     }
   }
 
+  if (parsedUA.family.indexOf('HeadlessChrome') > -1) {
+    return {
+      family: 'Chrome',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
   if (parsedUA.family === 'Firefox Mobile') {
     return {
       family: 'Firefox',
