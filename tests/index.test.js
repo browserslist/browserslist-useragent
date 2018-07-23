@@ -2,6 +2,10 @@ const ua = require('useragent-generator')
 
 const {resolveUserAgent, matchesUA, normalizeQuery} = require('../index')
 
+const CustomUserAgentString = {
+  YANDEX: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36",
+}
+
 it('normalizes queries properly', () => {
   expect(normalizeQuery('and_chr >= 61'))
     .toBe('Chrome >= 61')
@@ -117,6 +121,9 @@ it('resolves chrome/android properly', () => {
       family: 'Chrome',
       version: '41.0.228',
     })
+
+  expect(matchesUA(CustomUserAgentString.YANDEX, { browsers: ['Chrome >= 63']}))
+    .toBeTruthy()
 })
 
 it('resolves firefox properly', () => {
@@ -221,11 +228,16 @@ it('ignoreMinor option works correctly', () => {
     .toBeTruthy()
 })
 
-
-it('_allowHigherVersions works correctly', () => {
+it('_allowHigherVersions and allowHigherVersions work correctly', () => {
   expect(matchesUA(ua.chrome('99'), {browsers: ['chrome >= 60'], _allowHigherVersions: false}))
     .toBeFalsy()
 
+  expect(matchesUA(ua.chrome('99'), {browsers: ['chrome >= 60'], allowHigherVersions: false}))
+    .toBeFalsy()
+
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], _allowHigherVersions: true}))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], allowHigherVersions: true}))
     .toBeTruthy()
 })

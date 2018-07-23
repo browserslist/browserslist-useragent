@@ -30,7 +30,11 @@ function resolveUserAgent(uaString) {
   // renderer
   // @see https://github.com/Financial-Times/polyfill-service/pull/416
 
-  const strippedUA = uaString.replace(/((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/, '');
+  let strippedUA = uaString.replace(/((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/, '')
+
+  // Yandex Browser uses Chromium as the udnerlying engine
+  strippedUA = uaString.replace(/YaBrowser\/(\d+\.?)+/g, '')
+
   const parsedUA = useragent.parse(strippedUA)
 
   // Case A: For Safari, Chrome and others browsers
@@ -54,6 +58,7 @@ function resolveUserAgent(uaString) {
         parsedUA.os.patch].join('.'),
     }
   }
+
 
   // Case C: The caniuse database does not contain
   // historical browser versions for so called `minor`
@@ -163,7 +168,8 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
     referenceVersion = `^${versionB}`
   }
 
-  if (options._allowHigherVersions) {
+
+  if (options.allowHigherVersions || options.all) {
     return semver.gte(versionA, versionB)
   } else {
     return semver.satisfies(versionA, referenceVersion)
@@ -182,10 +188,15 @@ const matchesUA = (uaString, opts) => {
   const parsedBrowsers = parseBrowsersList(browsers)
   const resolvedUserAgent = resolveUserAgent(uaString)
 
+  if(opts._allowHigherVersions) {
+    console.warn('browserslist-useragent: The `_allowHigherVersions` option has been deprecated. Please use `allowHigherVersions` instead.')
+  }
+
   const options = {
     ignoreMinor: false,
     ignorePatch: true,
-    ...opts
+    ...opts,
+    allowHigherVersions: opts._allowHigherVersions || opts.allowHigherVersions
   }
 
   return parsedBrowsers.some(browser => {
