@@ -1,6 +1,6 @@
 {
   "name": "browserslist-useragent",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A utility to match a browselist query to browser user agents",
   "main": "lib/index.js",
   "repository": "https://github.com/pastelsky/browserslist-useragent",
