@@ -55,4 +55,4 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 ## When querying for modern browsers
  - It is a good idea to update this package often so that browser definitions are upto date. 
  - It is also a good idea to add `unreleased versions` to your browserslist query, and set `ignoreMinor` and `ignorePatch` to true so that alpha / beta / canary versions of browsers are matched.
- - In case you're unable to keep this package up-to-date, you can set the `_allowHigherVersions` to `true`. For all the browsers specified in your browserslist query, this will return a match if the user agent version is equal to or higher than those specified in your browserslist query. Use this with care though, since it's a wildcard, and only lightly tested. 
+ - In case you're unable to keep this package up-to-date, you can set the `allowHigherVersions` to `true`. For all the browsers specified in your browserslist query, this will return a match if the user agent version is equal to or higher than those specified in your browserslist query. Use this with care though, since it's a wildcard, and only lightly tested. 
