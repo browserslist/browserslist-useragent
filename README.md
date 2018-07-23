@@ -12,7 +12,7 @@ Find if a given user agent string satisfies a [browserslist](https://github.com/
 It automatically reads the browserslist configuration specified in your project, 
 but you can also specify the same using the `options` parameter.
 
-**If you're targeting modern browsers, read [this](#when-querying-for-modern-browsers).**
+**If you wish to target modern browsers, read [this](#when-querying-for-modern-browsers).**
 
 ## Installation
 ```bash
@@ -35,7 +35,7 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 | env | — | When multiple browserslist [enviroments](https://github.com/ai/browserslist#environments) are specified, pick the config belonging to this environment.|
 | ignorePatch | `true` | Ignore differences in patch browser numbers |
 | ignoreMinor | `false` | Ignore differences in minor browser versions |
-| allowHigherVersions | `false` | For all the browsers in the browserslist query, return a match if the user agent version is equal to or higher than the one specified in browserslist. See [why] this might be useful (#when-querying-for-modern-browsers)
+| allowHigherVersions | `false` | For all the browsers in the browserslist query, return a match if the user agent version is equal to or higher than the one specified in browserslist. See [why](#when-querying-for-modern-browsers) this might be useful 
 
 ## Supported browsers
  - Chrome (Chrome / Chromium / Yandex)
