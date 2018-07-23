@@ -38,7 +38,7 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 | allowHigherVersions | `false` | For all the browsers in the browserslist query, return a match if the user agent version is equal to or higher than the one specified in browserslist. See [why] this might be useful (#when-querying-for-modern-browsers)
 
 ## Supported browsers
- - Chrome (including Chromium)
+ - Chrome (Chrome / Chromium / Yandex)
  - Firefox
  - Safari
  - IE
