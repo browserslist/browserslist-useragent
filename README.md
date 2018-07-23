@@ -35,6 +35,7 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 | env | — | When multiple browserslist [enviroments](https://github.com/ai/browserslist#environments) are specified, pick the config belonging to this environment.|
 | ignorePatch | `true` | Ignore differences in patch browser numbers |
 | ignoreMinor | `false` | Ignore differences in minor browser versions |
+| allowHigherVersions | `false` | For all the browsers in the browserslist query, return a match if the user agent version is equal to or higher than the one specified in browserslist. See [why] this might be useful (#when-querying-for-modern-browsers)
 
 ## Supported browsers
  - Chrome (including Chromium)
