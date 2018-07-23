@@ -51,7 +51,7 @@ function resolveUserAgent(uaString) {
     return {
       family: 'iOS',
       version: [parsedUA.os.major, parsedUA.os.minor,
-                parsedUA.os.patch].join('.'),
+        parsedUA.os.patch].join('.'),
     }
   }
 
@@ -61,21 +61,11 @@ function resolveUserAgent(uaString) {
   // In this case, we proxy to the desktop version
   // @see https://github.com/Fyrd/caniuse/issues/3518
 
-  if (parsedUA.family.includes('Chrome Mobile')) {
-    return {
-      family: 'Chrome',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family.includes('Chromium')) {
-    return {
-      family: 'Chrome',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family.indexOf('HeadlessChrome') > -1) {
+  if (
+    parsedUA.family.includes('Chrome Mobile') ||
+    parsedUA.family.includes('Chromium') ||
+    parsedUA.family.includes('HeadlessChrome')
+  ) {
     return {
       family: 'Chrome',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
@@ -152,7 +142,8 @@ const parseBrowsersList = (browsersList) => {
       // Browser version can return as "10.0-10.2"
       const splitVersion = browserVersion.split('-')[0]
       normalizedVersion = semverify(splitVersion)
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return {
       family: normalizedName,

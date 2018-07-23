@@ -9,13 +9,16 @@
   "files": [
     "./lib/index.js"
   ],
+  "engines": {
+    "node": ">= 6.x.x"
+  },
   "scripts": {
     "test": "jest",
     "prepublish": "yarn run build",
     "build": "mkdir -p lib && babel index.js --out-file lib/index.js"
   },
   "dependencies": {
-    "browserslist": "^3.2.4",
+    "browserslist": "^4.0.1",
     "semver": "^5.4.1",
     "useragent": "^2.2.1"
   },
@@ -23,8 +26,8 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "jest": "^22.4.3",
-    "useragent-generator": "^1.0.3"
+    "jest": "^23.4.1",
+    "useragent-generator": "^1.1.0"
   },
   "jest": {
     "projects": [

@@ -12,6 +12,8 @@ Find if a given user agent string satisfies a [browserslist](https://github.com/
 It automatically reads the browserslist configuration specified in your project, 
 but you can also specify the same using the `options` parameter.
 
+**If you're targeting modern browsers, read [this](#when-querying-for-modern-browsers).**
+
 ## Installation
 ```bash
 npm install browserslist-useragent
@@ -35,12 +37,11 @@ matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', 
 | ignoreMinor | `false` | Ignore differences in minor browser versions |
 
 ## Supported browsers
- - Chrome
+ - Chrome (including Chromium)
  - Firefox
  - Safari
  - IE
  - Edge
- - Chromium
  
  PRs to add more _browserslist supported_ browsers are welcome 👋
  
