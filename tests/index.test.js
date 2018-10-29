@@ -6,6 +6,7 @@ const CustomUserAgentString = {
   YANDEX: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36",
   SAMSUNG_BROWSER_6_2: "Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-N920C Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/6.2 Chrome/56.0.2924.87 Mobile Safari/537.36",
   SAMSUNG_BROWSER_8_2: "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/8.2 Chrome/63.0.3239.111 Mobile Safari/537.36",
+  SAMSUNG_BROWSER_7_2: "Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-G920P Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.2 Chrome/59.0.3071.125 Mobile Safari/537.36	",
   SAMSUNG_BROWSER_7_4: "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.4 Chrome/59.0.3071.125 Mobile Safari/537.36"
 }
 
@@ -174,6 +175,12 @@ it('detects if browserslist matches UA', () => {
     .toBeTruthy()
 
   expect(matchesUA(ua.safari.iOS('11.0.0'), {browsers: ['iOS >= 10.3.0']}))
+    .toBeTruthy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['Samsung >= 7']}))
+    .toBeFalsy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_2, {browsers: ['Samsung >= 7']}))
     .toBeTruthy()
 
   const modernList = [
