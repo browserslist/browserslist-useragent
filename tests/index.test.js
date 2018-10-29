@@ -274,12 +274,12 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
     .toBeTruthy()
 
   // latest version of samsung browser reported by browserslist is 7.2.0
-  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
     .toBeTruthy()
 
-  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
     .toBeFalsy()
 
-  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
     .toBeFalsy()
 })
