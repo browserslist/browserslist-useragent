@@ -4,6 +4,9 @@ const {resolveUserAgent, matchesUA, normalizeQuery} = require('../index')
 
 const CustomUserAgentString = {
   YANDEX: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36",
+  SAMSUNG_BROWSER_6_2: "Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-N920C Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/6.2 Chrome/56.0.2924.87 Mobile Safari/537.36",
+  SAMSUNG_BROWSER_8_2: "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/8.2 Chrome/63.0.3239.111 Mobile Safari/537.36",
+  SAMSUNG_BROWSER_7_4: "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.4 Chrome/59.0.3071.125 Mobile Safari/537.36"
 }
 
 it('normalizes queries properly', () => {
@@ -140,6 +143,26 @@ it('resolves firefox properly', () => {
     })
 })
 
+it('resolves samsung browser properly', () => {
+  expect(resolveUserAgent(CustomUserAgentString.SAMSUNG_BROWSER_6_2))
+    .toEqual({
+      family: 'Samsung',
+      version: '6.2.0'
+    })
+
+  expect(resolveUserAgent(CustomUserAgentString.SAMSUNG_BROWSER_7_4))
+    .toEqual({
+      family: 'Samsung',
+      version: '7.4.0'
+    })
+
+  expect(resolveUserAgent(CustomUserAgentString.SAMSUNG_BROWSER_8_2))
+    .toEqual({
+      family: 'Samsung',
+      version: '8.2.0'
+    })
+})
+
 it('detects if browserslist matches UA', () => {
   expect(matchesUA(ua.firefox.androidPhone('40.0.1'), {browsers: ['Firefox >= 40']}))
     .toBeTruthy()
@@ -240,4 +263,23 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
 
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], allowHigherVersions: true}))
     .toBeTruthy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
+    .toBeTruthy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
+    .toBeTruthy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
+    .toBeTruthy()
+
+  // latest version of samsung browser reported by browserslist is 7.2.0
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+    .toBeTruthy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+    .toBeFalsy()
+
+  expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung <= 7'], allowHigherVersions: false}))
+    .toBeFalsy()
 })

@@ -98,6 +98,13 @@ function resolveUserAgent(uaString) {
     }
   }
 
+  if (parsedUA.family === 'Samsung Internet') {
+    return {
+      family: 'Samsung',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
   return {
     family: parsedUA.family,
     version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
