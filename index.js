@@ -177,8 +177,11 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
 }
 
 const matchesUA = (uaString, opts) => {
+  if (!opts) {
+    opts = {}
+  }
   let normalizedQuery
-  if (opts && opts.browsers) {
+  if (opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
   }
   const browsers = browserslist(normalizedQuery, {
