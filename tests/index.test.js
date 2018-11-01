@@ -59,6 +59,26 @@ it('resolves all browsers in iOS to safari with correct platform version', () =>
     })
 })
 
+it('resolves desktop safari on osx properly', () => {
+  expect(resolveUserAgent(ua.safari('10.1.0')))
+    .toEqual({
+      family: 'Safari',
+      version: '10.1.0',
+    })
+
+  expect(resolveUserAgent(ua.safari('11.0.0')))
+    .toEqual({
+      family: 'Safari',
+      version: '11.0.0',
+    })
+
+  expect(resolveUserAgent(ua.safari('12.0.0')))
+    .toEqual({
+      family: 'Safari',
+      version: '12.0.0',
+    })
+})
+
 it('resolves IE/Edge properly', () => {
   expect(resolveUserAgent(ua.ie('11.0.0')))
     .toEqual({
@@ -188,6 +208,7 @@ it('detects if browserslist matches UA', () => {
     "Edge >= 15",
     "Chrome >= 58",
     "iOS >= 10",
+    "Safari >= 11",
   ]
 
   expect(matchesUA(ua.safari.iOS(9), {browsers: modernList}))
@@ -210,6 +231,21 @@ it('detects if browserslist matches UA', () => {
 
   expect(matchesUA(ua.chrome.androidWebview('4.3.3'), {browsers: modernList}))
     .toBeFalsy()
+
+  expect(matchesUA(ua.safari('11.0.0'), {browsers: modernList}))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.safari('11.1.0'), {browsers: modernList}))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.safari('12.0.0'), {browsers: modernList}))
+    .toBeTruthy()
+
+  expect(matchesUA(ua.safari('10.0.0'), {browsers: modernList}))
+    .toBeFalsy()
+
+  expect(matchesUA(ua.safari('10.1.2'), {browsers: modernList}))
+    .toBeFalsy()
 })
 
 it('can interpret various variations in specifying browser names', () => {
@@ -219,7 +255,7 @@ it('can interpret various variations in specifying browser names', () => {
   expect(matchesUA(ua.safari.iOS('10.3.0'), {browsers: ['ios_saf >= 10.1.0']}))
     .toBeTruthy()
 
-  expect(matchesUA(ua.safari('10.3.0'), {browsers: ['ios_saf >= 10.1.0']}))
+  expect(matchesUA(ua.safari('10.1.2'), {browsers: ['Safari >= 10.1.0']}))
     .toBeTruthy()
 
   expect(matchesUA(ua.firefox.androidPhone('46.0.0'), {browsers: ['FirefoxAndroid >= 41.1.0']}))

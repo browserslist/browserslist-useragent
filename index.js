@@ -39,7 +39,7 @@ function resolveUserAgent(uaString) {
 
   // Case A: For Safari, Chrome and others browsers
   // that report as Safari after stripping tags
-  if (parsedUA.family.includes('Safari')) {
+  if (parsedUA.family.includes('Safari') && parsedUA.os.family === 'iOS') {
     return {
       family: 'iOS',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
