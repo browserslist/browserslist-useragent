@@ -241,3 +241,7 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], allowHigherVersions: true}))
     .toBeTruthy()
 })
+
+it('allows two zeros in version', () => {
+  expect(matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00', { browsers: ['opera >= 12'] })).toBeTruthy()
+})
