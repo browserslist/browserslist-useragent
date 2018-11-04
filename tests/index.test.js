@@ -326,3 +326,7 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
     .toBeFalsy()
 })
+
+it('allows two zeros in version', () => {
+  expect(matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00', { browsers: ['opera >= 12'] })).toBeTruthy()
+})
