@@ -176,7 +176,7 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
   }
 }
 
-const matchesUA = (uaString, opts) => {
+const createUAMatcher = (opts) => {
   let normalizedQuery
   if (opts && opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
@@ -186,7 +186,6 @@ const matchesUA = (uaString, opts) => {
     path: process.cwd()
   })
   const parsedBrowsers = parseBrowsersList(browsers)
-  const resolvedUserAgent = resolveUserAgent(uaString)
 
   if(opts._allowHigherVersions) {
     console.warn('browserslist-useragent: The `_allowHigherVersions` option has been deprecated. Please use `allowHigherVersions` instead.')
@@ -199,15 +198,24 @@ const matchesUA = (uaString, opts) => {
     allowHigherVersions: opts._allowHigherVersions || opts.allowHigherVersions
   }
 
-  return parsedBrowsers.some(browser => {
-    return (
-      browser.family.toLowerCase() === resolvedUserAgent.family.toLocaleLowerCase() &&
-      compareBrowserSemvers(resolvedUserAgent.version, browser.version, options)
-    )
-  })
+  return (uaString) => {
+    const resolvedUserAgent = resolveUserAgent(uaString)
+
+    return parsedBrowsers.some(browser => {
+      return (
+        browser.family.toLowerCase() === resolvedUserAgent.family.toLocaleLowerCase() &&
+        compareBrowserSemvers(resolvedUserAgent.version, browser.version, options)
+      )
+    })
+  }
+}
+
+const matchesUA = (uaString, opts) => {
+  return createUAMatcher(opts)(uaString);
 }
 
 module.exports = {
+  createUAMatcher,
   matchesUA,
   resolveUserAgent,
   normalizeQuery,
