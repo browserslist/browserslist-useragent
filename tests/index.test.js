@@ -1,6 +1,6 @@
 const ua = require('useragent-generator')
 
-const {resolveUserAgent, matchesUA, normalizeQuery} = require('../index')
+const {resolveUserAgent, createUAMatcher, matchesUA, normalizeQuery} = require('../index')
 
 const CustomUserAgentString = {
   YANDEX: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36",
@@ -240,4 +240,11 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
 
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], allowHigherVersions: true}))
     .toBeTruthy()
+})
+
+it('createUAMatcher returns configured matchesUA function', () => {
+  const matches = createUAMatcher({browsers: ['Firefox >= 40']});
+
+  expect(matches(ua.firefox('39'))).toBeFalsy();
+  expect(matches(ua.firefox('40'))).toBeTruthy();
 })
