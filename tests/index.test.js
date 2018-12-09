@@ -245,3 +245,11 @@ it('_allowHigherVersions and allowHigherVersions work correctly', () => {
 it('allows two zeros in version', () => {
   expect(matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00', { browsers: ['opera >= 12'] })).toBeTruthy()
 })
+
+it('allows more zeroes in version', () => {
+  expect(matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.000.1', { browsers: ['opera >= 12'] })).toBeTruthy()
+})
+
+it('allows any leading zeroes in version', () => {
+  expect(matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.0.0001', { browsers: ['opera >= 12'] })).toBeTruthy()
+})

@@ -35,8 +35,8 @@ function resolveUserAgent(uaString) {
   // Yandex Browser uses Chromium as the udnerlying engine
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
 
-  // Fixes version like 12.00.0 for opera
-  strippedUA = strippedUA.replace(/\.00/g, '.0')
+  // Fixes version like 12.00.0 for opera or 12.0.01
+  strippedUA = strippedUA.replace(/\.0+(\d)/g, '.$1')
 
   const parsedUA = useragent.parse(strippedUA)
 
