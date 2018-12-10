@@ -25,13 +25,27 @@ const { matchesUA } = require('browserslist-useragent')
 
 matchesUA(userAgentString, options)
 
-// with browserslist config inferred
-matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0')
-//returns boolean
-
-// with explicit browserslist
+// With explicit browserslist config:
 matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0', { browsers: ['Firefox > 53']})
-// returns true
+// Returns:
+// {
+//   matches: true,
+//   userAgent: {
+//     family: 'Firefox',
+//     version: '54.0.0'
+//   }
+// }
+
+// With inferred browserslist config:
+matchesUA('Mozilla/5.0 (Windows NT 10.0; rv:54.0) Gecko/20100101 Firefox/54.0')
+
+// With an unrecognizable user agent:
+matchesUA('unrecognizable')
+// Returns:
+// {
+//   matches: false,
+//   userAgent: null
+// }
 ```
 
 | Option | Default Value | Description |
