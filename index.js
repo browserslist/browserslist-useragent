@@ -209,12 +209,13 @@ const matchesUA = (uaString, opts) => {
     allowHigherVersions: opts._allowHigherVersions || opts.allowHigherVersions
   }
 
-  return parsedBrowsers.some(browser => {
-    return (
+  return {
+    matches: parsedBrowsers.some(browser => (
       browser.family.toLowerCase() === resolvedUserAgent.family.toLocaleLowerCase() &&
       compareBrowserSemvers(resolvedUserAgent.version, browser.version, options)
-    )
-  })
+    )),
+    userAgent: resolvedUserAgent.family === 'Other' ? null : resolvedUserAgent
+  }
 }
 
 module.exports = {

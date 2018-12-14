@@ -127,7 +127,7 @@ it('resolves chrome/android properly', () => {
     })
 
   expect(matchesUA(CustomUserAgentString.YANDEX, { browsers: ['Chrome >= 63']}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 })
 
 it('resolves firefox properly', () => {
@@ -166,22 +166,58 @@ it('resolves samsung browser properly', () => {
 
 it('detects if browserslist matches UA', () => {
   expect(matchesUA(ua.firefox.androidPhone('40.0.1'), {browsers: ['Firefox >= 40']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Firefox',
+        version: '40.0.0'
+      }
+    })
 
   expect(matchesUA(ua.firefox('30.0.0'), {browsers: ['Firefox >= 10.0.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Firefox',
+        version: '30.0.0'
+      }
+    })
 
   expect(matchesUA(ua.chrome.iOS('11.0.0'), {browsers: ['iOS >= 10.3.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'iOS',
+        version: '11.0.0'
+      }
+    })
 
   expect(matchesUA(ua.safari.iOS('11.0.0'), {browsers: ['iOS >= 10.3.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'iOS',
+        version: '11.0.0'
+      }
+    })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['Samsung >= 7']}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'Samsung',
+        version: '6.2.0'
+      }
+    })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_2, {browsers: ['Samsung >= 7']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Samsung',
+        version: '7.2.0'
+      }
+    })
 
   const modernList = [
     "Firefox >= 53",
@@ -191,47 +227,113 @@ it('detects if browserslist matches UA', () => {
   ]
 
   expect(matchesUA(ua.safari.iOS(9), {browsers: modernList}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'iOS',
+        version: '9.0.0'
+      }
+    })
 
   expect(matchesUA(ua.chrome.androidPhone(57), {browsers: modernList}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'Chrome',
+        version: '57.0.0'
+      }
+    })
 
   expect(matchesUA(ua.firefox.androidPhone(52), {browsers: modernList}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'Firefox',
+        version: '52.0.0'
+      }
+    })
 
   expect(matchesUA(ua.firefox(56), {browsers: modernList}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Firefox',
+        version: '56.0.0'
+      }
+    })
 
   expect(matchesUA(ua.edge(14), {browsers: modernList}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'Edge',
+        version: '14.0.0'
+      }
+    })
 
   expect(matchesUA(ua.chrome(64), {browsers: modernList}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Chrome',
+        version: '64.0.0'
+      }
+    })
 
   expect(matchesUA(ua.chrome.androidWebview('4.3.3'), {browsers: modernList}))
-    .toBeFalsy()
+    .toEqual({
+      matches: false,
+      userAgent: {
+        family: 'Android',
+        version: '4.3.3'
+      }
+    })
 })
 
 it('can interpret various variations in specifying browser names', () => {
   expect(matchesUA(ua.chrome(49), {browsers: ['and_chr >= 49']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Chrome',
+        version: '49.0.0'
+      }
+    })
 
   expect(matchesUA(ua.safari.iOS('10.3.0'), {browsers: ['ios_saf >= 10.1.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'iOS',
+        version: '10.3.0'
+      }
+    })
 
   expect(matchesUA(ua.safari('10.3.0'), {browsers: ['ios_saf >= 10.1.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'iOS',
+        version: '10.3.0'
+      }
+    })
 
   expect(matchesUA(ua.firefox.androidPhone('46.0.0'), {browsers: ['FirefoxAndroid >= 41.1.0']}))
-    .toBeTruthy()
+    .toEqual({
+      matches: true,
+      userAgent: {
+        family: 'Firefox',
+        version: '46.0.0'
+      }
+    })
 })
 
 it('ignorePatch option works correctly', () => {
   expect(matchesUA(ua.firefox('49.0.1'), {browsers: ['ff >= 44'], ignorePatch: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 
   expect(matchesUA(ua.firefox('49.0.1'), {browsers: ['ff >= 44'], ignorePatch: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(
     matchesUA(
@@ -239,15 +341,15 @@ it('ignorePatch option works correctly', () => {
       {browsers: ['ff >= 44'], ignorePatch: true, ignoreMinor: false},
     ),
   )
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 })
 
 it('ignoreMinor option works correctly', () => {
   expect(matchesUA(ua.firefox('49.1.0'), {browsers: ['ff >= 44'], ignoreMinor: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 
   expect(matchesUA(ua.firefox('49.1.0'), {browsers: ['ff >= 44'], ignoreMinor: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(
     matchesUA(
@@ -255,38 +357,46 @@ it('ignoreMinor option works correctly', () => {
       {browsers: ['ff >= 44'], ignoreMinor: true, ignorePatch: false},
     ),
   )
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 })
 
 it('_allowHigherVersions and allowHigherVersions work correctly', () => {
   expect(matchesUA(ua.chrome('99'), {browsers: ['chrome >= 60'], _allowHigherVersions: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 
   expect(matchesUA(ua.chrome('99'), {browsers: ['chrome >= 60'], allowHigherVersions: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], _allowHigherVersions: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(matchesUA(ua.chrome('66'), {browsers: ['chrome >= 60'], allowHigherVersions: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung >= 3'], allowHigherVersions: true}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   // latest version of samsung browser reported by browserslist is 7.2.0
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_6_2, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
-    .toBeTruthy()
+    .toMatchObject({ matches: true })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_7_4, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
 
   expect(matchesUA(CustomUserAgentString.SAMSUNG_BROWSER_8_2, {browsers: ['samsung >= 3'], allowHigherVersions: false}))
-    .toBeFalsy()
+    .toMatchObject({ matches: false })
+})
+
+it('handles an unrecognizable UA', () => {
+  expect(matchesUA('unrecognizable', {browsers: ['Chrome >= 60']}))
+    .toEqual({
+      matches: false,
+      userAgent: null
+    })
 })
