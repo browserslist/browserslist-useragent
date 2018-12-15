@@ -279,15 +279,9 @@ it('ignoreMinor option works correctly', () => {
     .toBeTruthy()
 })
 
-it('_allowHigherVersions and allowHigherVersions work correctly', () => {
-  expect(matchesUA(ua.chrome('99'), { browsers: ['chrome >= 60'], _allowHigherVersions: false }))
-    .toBeFalsy()
-
+it('allowHigherVersions works correctly', () => {
   expect(matchesUA(ua.chrome('99'), { browsers: ['chrome >= 60'], allowHigherVersions: false }))
     .toBeFalsy()
-
-  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], _allowHigherVersions: true }))
-    .toBeTruthy()
 
   expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], allowHigherVersions: true }))
     .toBeTruthy()

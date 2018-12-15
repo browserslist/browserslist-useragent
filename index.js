@@ -199,15 +199,10 @@ const matchesUA = (uaString, opts = {}) => {
   const parsedBrowsers = parseBrowsersList(browsers)
   const resolvedUserAgent = resolveUserAgent(uaString)
 
-  if (opts._allowHigherVersions) {
-    console.warn('browserslist-useragent: The `_allowHigherVersions` option has been deprecated. Please use `allowHigherVersions` instead.')
-  }
-
   const options = {
     ignoreMinor: false,
     ignorePatch: true,
     ...opts,
-    allowHigherVersions: opts._allowHigherVersions || opts.allowHigherVersions
   }
 
   return parsedBrowsers.some(browser => {
