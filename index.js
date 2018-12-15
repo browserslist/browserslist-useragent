@@ -80,6 +80,13 @@ function resolveUserAgent(uaString) {
     }
   }
 
+  if (parsedUA.family === 'Samsung Internet') {
+    return {
+      family: 'Samsung',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
   if (parsedUA.family === 'Firefox Mobile') {
     return {
       family: 'Firefox',
@@ -97,13 +104,6 @@ function resolveUserAgent(uaString) {
   if (parsedUA.family === 'IE Mobile') {
     return {
       family: 'ExplorerMobile',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'Samsung Internet') {
-    return {
-      family: 'Samsung',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
     }
   }
