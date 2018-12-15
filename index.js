@@ -35,9 +35,6 @@ function resolveUserAgent(uaString) {
   // Yandex Browser uses Chromium as the udnerlying engine
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
 
-  // Fixes version like 12.00.0 for opera or 12.0.01
-  strippedUA = strippedUA.replace(/\.0+(\d)/g, '.$1')
-
   const parsedUA = useragent.parse(strippedUA)
 
   // Case A: For Safari, Chrome and others browsers
@@ -117,8 +114,11 @@ function resolveUserAgent(uaString) {
 // Convert version to a semver value.
 // 2.5 -> 2.5.0; 1 -> 1.0.0;
 const semverify = (version) => {
-  if (typeof version === 'string' && semver.valid(version)) {
-    return version
+  if (
+    typeof version === 'string' &&
+    semver.valid(version, { loose: true })
+  ) {
+    return semver.parse(version, { loose: true }).version
   }
 
   const split = version.toString().split('.')
@@ -156,7 +156,7 @@ const parseBrowsersList = (browsersList) => {
     try {
       // Browser version can return as "10.0-10.2"
       const splitVersion = browserVersion.split('-')[0]
-      normalizedVersion = semverify(splitVersion)
+      normalizedVersion = splitVersion
     } catch (e) {
     }
 
@@ -168,21 +168,22 @@ const parseBrowsersList = (browsersList) => {
 }
 
 const compareBrowserSemvers = (versionA, versionB, options) => {
-  let referenceVersion = versionB
+  const semverifiedA = semverify(versionA)
+  const semverifiedB = semverify(versionB)
+  let referenceVersion = semverifiedB
 
   if (options.ignorePatch) {
-    referenceVersion = `~${versionB}`
+    referenceVersion = `~${semverifiedB}`
   }
 
   if (options.ignoreMinor) {
-    referenceVersion = `^${versionB}`
+    referenceVersion = `^${semverifiedB}`
   }
 
-
-  if (options.allowHigherVersions || options.all) {
-    return semver.gte(versionA, versionB)
+  if (options.allowHigherVersions) {
+    return semver.gte(semverifiedA, semverifiedB)
   } else {
-    return semver.satisfies(versionA, referenceVersion)
+    return semver.satisfies(semverifiedA, referenceVersion)
   }
 }
 
