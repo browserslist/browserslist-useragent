@@ -37,7 +37,7 @@ function resolveUserAgent(uaString) {
 
   const parsedUA = useragent.parse(strippedUA)
 
-  // Case A: For Safari, Chrome and others browsers
+  // Case A: For Safari, Chrome and others browsers on iOS
   // that report as Safari after stripping tags
   if (parsedUA.family.includes('Safari') && parsedUA.os.family === 'iOS') {
     return {
@@ -155,8 +155,7 @@ const parseBrowsersList = (browsersList) => {
 
     try {
       // Browser version can return as "10.0-10.2"
-      const splitVersion = browserVersion.split('-')[0]
-      normalizedVersion = splitVersion
+      normalizedVersion = browserVersion.split('-')[0]
     } catch (e) {
     }
 
