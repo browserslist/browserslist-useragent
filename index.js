@@ -186,10 +186,7 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
   }
 }
 
-const matchesUA = (uaString, opts) => {
-  if (!opts) {
-    opts = {}
-  }
+const matchesUA = (uaString, opts = {}) => {
   let normalizedQuery
   if (opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
@@ -201,7 +198,7 @@ const matchesUA = (uaString, opts) => {
   const parsedBrowsers = parseBrowsersList(browsers)
   const resolvedUserAgent = resolveUserAgent(uaString)
 
-  if(opts._allowHigherVersions) {
+  if (opts._allowHigherVersions) {
     console.warn('browserslist-useragent: The `_allowHigherVersions` option has been deprecated. Please use `allowHigherVersions` instead.')
   }
 
