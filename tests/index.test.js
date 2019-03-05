@@ -157,6 +157,174 @@ it('resolves samsung browser properly', () => {
     })
 })
 
+it('resolves bots properly', () => {
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.1.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Googlebot-News/2.1; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.1.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Googlebot-Image/1.0; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '1.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Googlebot-Video/1.0; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '1.0.0'
+    })
+  expect(resolveUserAgent("SAMSUNG-SGH-E250/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0 (compatible; Googlebot-Mobile/2.1; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.1.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.1.0'
+    })
+  expect(resolveUserAgent("(compatible; Mediapartners-Google/2.1; +http://www.google.com/bot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.1.0'
+    })
+  expect(resolveUserAgent("Mediapartners-Google"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("AdsBot-Google (+http://www.google.com/adsbot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("AdsBot-Google-Mobile-Apps"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("Google (+https://developers.google.com/+/web/snippet/)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("DuckDuckBot/1.0; (+http://duckduckgo.com/duckduckbot.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '1.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-image/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-video/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-news/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-favo/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-cpro/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Baiduspider-ads/2.0; +http://www.baidu.com/search/spider.html)"))
+    .toEqual({
+      family: 'Bot',
+      version: '2.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"))
+    .toEqual({
+      family: 'Bot',
+      version: '3.0.0'
+    })
+  expect(resolveUserAgent("Sogou Pic Spider/3.0( http://www.sogou.com/docs/help/webmasters.htm#07)"))
+    .toEqual({
+      family: 'Bot',
+      version: '3.0.0'
+    })
+  expect(resolveUserAgent("Sogou head spider/3.0( http://www.sogou.com/docs/help/webmasters.htm#07)"))
+    .toEqual({
+      family: 'Bot',
+      version: '3.0.0'
+    })
+  expect(resolveUserAgent("Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)"))
+    .toEqual({
+      family: 'Bot',
+      version: '4.0.0'
+    })
+  expect(resolveUserAgent("Sogou Orion spider/3.0( http://www.sogou.com/docs/help/webmasters.htm#07)"))
+    .toEqual({
+      family: 'Bot',
+      version: '3.0.0'
+    })
+  expect(resolveUserAgent("Sogou-Test-Spider/4.0 (compatible; MSIE 5.5; Windows 98)"))
+    .toEqual({
+      family: 'Bot',
+      version: '4.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Exabot-Thumbnails)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("Mozilla/5.0 (compatible; Exabot/3.0; +http://www.exabot.com/go/robot)"))
+    .toEqual({
+      family: 'Bot',
+      version: '3.0.0'
+    })
+  expect(resolveUserAgent("facebot"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+  expect(resolveUserAgent("facebookexternalhit/1.0 (+http://www.facebook.com/externalhit_uatext.php)"))
+    .toEqual({
+      family: 'Bot',
+      version: '1.0.0'
+    })
+  expect(resolveUserAgent("facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"))
+    .toEqual({
+      family: 'Bot',
+      version: '1.1.0'
+    })
+  expect(resolveUserAgent("ia_archiver (+http://www.alexa.com/site/help/webmasters; crawler@alexa.com)"))
+    .toEqual({
+      family: 'Bot',
+      version: '0.0.0'
+    })
+})
+
 it('detects if browserslist matches UA', () => {
   expect(matchesUA(ua.firefox.androidPhone('40.0.1'), { browsers: ['Firefox >= 40'] }))
     .toBeTruthy()
@@ -262,6 +430,15 @@ it('allowHigherVersions works correctly', () => {
 
   expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], allowHigherVersions: true }))
     .toBeTruthy()
+})
+
+it('allowBots works correctly', () => {
+  expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"))
+    .toBeFalsy();
+  expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)", { allowBots: false }))
+    .toBeFalsy();
+  expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)", { allowBots: true }))
+    .toBeTruthy();
 })
 
 it('parses semvers liberally', () => {
