@@ -23,6 +23,38 @@ const browserNameMap = {
   and_uc: 'UCAndroid',
 }
 
+const bots = [
+  'Googlebot',
+  'Googlebot-News',
+  'Googlebot-Image',
+  'Googlebot-Video',
+  'Googlebot-Mobile',
+  'Mediapartners-Google',
+  'AdsBot-Google',
+  'AdsBot-Google-Mobile-Apps',
+  'GooglePlusBot',
+  'Bingbot',
+  'Yahoo! Slurp',
+  'DuckDuckBot',
+  'Baiduspider',
+  'Baiduspider-image',
+  'Baiduspider-video',
+  'Baiduspider-news',
+  'Baiduspider-favo',
+  'Baiduspider-cpro',
+  'Baiduspider-ads',
+  'YandexBot',
+  'Sogou Pic Spider',
+  'Sogou head spider',
+  'Sogou web spider',
+  'Sogou Orion spider',
+  'Sogou-Test-Spider',
+  'Exabot',
+  'facebot',
+  'FacebookBot',
+  'ia_archiver',
+]
+
 function resolveUserAgent(uaString) {
   // Chrome and Opera on iOS uses a UIWebView of the underlying platform to render
   // content, by stripping the CriOS or OPiOS strings the useragent parser will alias the
@@ -36,6 +68,13 @@ function resolveUserAgent(uaString) {
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
 
   const parsedUA = useragent.parse(strippedUA)
+
+  if (bots.some(bot => parsedUA.family.toLowerCase() == bot.toLowerCase())) {
+    return {
+      family: 'Bot',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.')
+    }
+  }
 
   // Case A: For Safari, Chrome and others browsers on iOS
   // that report as Safari after stripping tags
@@ -202,6 +241,10 @@ const matchesUA = (uaString, opts = {}) => {
     ignoreMinor: false,
     ignorePatch: true,
     ...opts,
+  }
+
+  if (options.allowBots) {
+    return true;
   }
 
   return parsedBrowsers.some(browser => {
