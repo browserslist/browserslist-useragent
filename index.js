@@ -243,7 +243,7 @@ const matchesUA = (uaString, opts = {}) => {
     ...opts,
   }
 
-  if (options.allowBots) {
+  if (options.allowBots && resolvedUserAgent.family == 'Bot') {
     return true;
   }
 

@@ -435,9 +435,19 @@ it('allowHigherVersions works correctly', () => {
 it('allowBots works correctly', () => {
   expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"))
     .toBeFalsy();
+  expect(matchesUA(ua.chrome('59'), { browsers: ['chrome >= 60'] }))
+    .toBeFalsy();
+  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'] }))
+    .toBeTruthy();
   expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)", { allowBots: false }))
     .toBeFalsy();
+  expect(matchesUA(ua.chrome('59'), { browsers: ['chrome >= 60'], allowBots: false }))
+    .toBeFalsy();
+  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], allowBots: false }))
+    .toBeTruthy();
   expect(matchesUA("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)", { allowBots: true }))
+    .toBeTruthy();
+  expect(matchesUA(ua.chrome('66'), { browsers: ['chrome >= 60'], allowBots: true }))
     .toBeTruthy();
 })
 
