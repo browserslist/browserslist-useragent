@@ -13,8 +13,8 @@ const browserNameMap = {
   ChromeAndroid: 'Chrome',
   FirefoxAndroid: 'Firefox',
   ff: 'Firefox',
-  ie: 'Explorer',
   ie_mob: 'ExplorerMobile',
+  ie: 'Explorer',
   and_ff: 'Firefox',
   ios_saf: 'iOS',
   op_mini: 'OperaMini',
@@ -34,6 +34,9 @@ function resolveUserAgent(uaString) {
 
   // Yandex Browser uses Chromium as the udnerlying engine
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
+
+  // Facebook Webview
+  strippedUA = strippedUA.replace(/FB_IAB/g, '').replace(/FBAN\/FBIOS/g, '');
 
   const parsedUA = useragent.parse(strippedUA)
 
@@ -68,6 +71,7 @@ function resolveUserAgent(uaString) {
 
   if (
     parsedUA.family.includes('Chrome Mobile') ||
+    parsedUA.family.includes('Chrome Mobile WebView') ||
     parsedUA.family.includes('Chromium') ||
     parsedUA.family.includes('HeadlessChrome')
   ) {

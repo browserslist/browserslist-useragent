@@ -5,6 +5,8 @@ const { resolveUserAgent, matchesUA, normalizeQuery } = require('../index')
 const CustomUserAgentString = {
   YANDEX: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36',
   SAMSUNG_BROWSER_7_2: 'Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.2 Chrome/63.0.3239.111 Mobile Safari/537.36',
+  FACEBOOK_WEBVIEW_CHROME_ANDROID: 'Mozilla/5.0 (Linux; Android 8.0.0; LG-H930 Build/OPR1.170623.026; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/69.0.3497.100 Mobile Safari/537.36 [FB_IAB/Orca-Android;FBAV/189.0.0.27.99;]',
+  FACEBOOK_WEBVIEW_IOS: 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12D508 [FBAN/FBIOS;FBAV/27.0.0.10.12;FBBV/8291884;FBDV/iPhone7,1;FBMD/iPhone;FBSN/iPhone OS;FBSV/8.2;FBSS/3; FBCR/vodafoneIE;FBID/phone;FBLC/en_US;FBOP/5]',
 }
 
 it('normalizes queries properly', () => {
@@ -77,7 +79,6 @@ it('resolves IE/Edge properly', () => {
       version: '10.0.0',
     })
 
-
   expect(resolveUserAgent(ua.edge('14.1.0')))
     .toEqual({
       family: 'Edge',
@@ -132,6 +133,24 @@ it('resolves chrome/android properly', () => {
     })
 
   expect(matchesUA(CustomUserAgentString.YANDEX, { browsers: ['Chrome >= 63'] }))
+    .toBeTruthy()
+
+  expect(resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID))
+    .toEqual({
+      family: 'Chrome',
+      version: '69.0.3497',
+    })
+
+  expect(matchesUA(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID, { browsers: ['Chrome >= 63'] }))
+    .toBeTruthy()
+
+  expect(resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_IOS))
+    .toEqual({
+      family: 'iOS',
+      version: '8.2.0',
+    })
+
+  expect(matchesUA(CustomUserAgentString.FACEBOOK_WEBVIEW_IOS, { browsers: ['iOS >= 8'] }))
     .toBeTruthy()
 })
 
@@ -293,4 +312,5 @@ it('can deal with version ranges (if returned by browserslist)', () => {
   expect(
     matchesUA(ua.safari.iOS('9.1.0'), { browsers: ['ios_saf >= 9.2'] }))
     .toBeTruthy()  // <-- should actually be falsy
+
 })
