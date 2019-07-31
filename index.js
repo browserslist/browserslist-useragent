@@ -130,6 +130,28 @@ const semverify = (version) => {
   return split.join('.')
 }
 
+function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
+
+// 10.0-10.2 -> 10.0, 10.1, 10.2
+function generateSemversInRange(versionRange) {
+  const [start, end] = versionRange.split('-')
+  const startSemver = semverify(start)
+  const endSemver = semverify(end)
+  const versionsInRange = [];
+  let curVersion = startSemver;
+
+  while (semver.gte(endSemver, curVersion)) {
+    versionsInRange.push(curVersion)
+    curVersion = semver.inc(curVersion, 'minor')
+  }
+
+  return versionsInRange;
+}
+
 function normalizeQuery(query) {
   let normalizedQuery = query
   const regex = `(${Object.keys(browserNameMap).join('|')})`
@@ -143,7 +165,7 @@ function normalizeQuery(query) {
 }
 
 const parseBrowsersList = (browsersList) => {
-  return browsersList.map(browser => {
+  const browsers = browsersList.map(browser => {
     const [browserName, browserVersion] = browser.split(' ')
 
     let normalizedName = browserName
@@ -153,17 +175,22 @@ const parseBrowsersList = (browsersList) => {
       normalizedName = browserNameMap[browserName]
     }
 
-    try {
-      // Browser version can return as "10.0-10.2"
-      normalizedVersion = browserVersion.split('-')[0]
-    } catch (e) {
-    }
-
-    return {
-      family: normalizedName,
-      version: normalizedVersion,
+    // browserslist might return ranges (9.0-9.2), unwrap them
+    // see https://github.com/browserslist/browserslist-useragent/issues/41
+    if (browserVersion.indexOf('-') > 0) {
+      return generateSemversInRange(browserVersion).map(version => ({
+        family: normalizedName,
+        version,
+      }))
+    } else {
+      return {
+        family: normalizedName,
+        version: normalizedVersion,
+      }
     }
   })
+
+  return flatten(browsers);
 }
 
 const compareBrowserSemvers = (versionA, versionB, options) => {
@@ -196,6 +223,7 @@ const matchesUA = (uaString, opts = {}) => {
     path: process.cwd()
   })
   const parsedBrowsers = parseBrowsersList(browsers)
+
   const resolvedUserAgent = resolveUserAgent(uaString)
 
   const options = {

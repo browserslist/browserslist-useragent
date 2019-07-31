@@ -3,8 +3,8 @@ const ua = require('useragent-generator')
 const { resolveUserAgent, matchesUA, normalizeQuery } = require('../index')
 
 const CustomUserAgentString = {
-  YANDEX: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36",
-  SAMSUNG_BROWSER_7_2: "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.2 Chrome/63.0.3239.111 Mobile Safari/537.36",
+  YANDEX: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.1.1.839 Yowser/2.5 Safari/537.36',
+  SAMSUNG_BROWSER_7_2: 'Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.2 Chrome/63.0.3239.111 Mobile Safari/537.36',
 }
 
 it('normalizes queries properly', () => {
@@ -174,12 +174,12 @@ it('detects if browserslist matches UA', () => {
     .toBeTruthy()
 
   const modernList = [
-    "Firefox >= 53",
-    "Edge >= 15",
-    "Chrome >= 58",
-    "iOS >= 10",
-    "Safari >= 11",
-    "Samsung >= 7"
+    'Firefox >= 53',
+    'Edge >= 15',
+    'Chrome >= 58',
+    'iOS >= 10',
+    'Safari >= 11',
+    'Samsung >= 7'
   ]
 
   expect(matchesUA(ua.safari.iOS(9), { browsers: modernList }))
@@ -277,4 +277,20 @@ it('parses semvers liberally', () => {
   expect(
     matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.0.0001', { browsers: ['opera >= 12'] }))
     .toBeTruthy()
+})
+
+it('can deal with version ranges (if returned by browserslist)', () => {
+  expect(
+    matchesUA(ua.safari.iOS('9.1.0'), { browsers: ['ios_saf >= 9'] }))
+    .toBeTruthy()
+
+  expect(
+    matchesUA(ua.safari.iOS('9.0.0'), { browsers: ['ios_saf >= 9'] }))
+    .toBeTruthy()
+
+  // This should fail
+  // see https://github.com/browserslist/browserslist/issues/402
+  expect(
+    matchesUA(ua.safari.iOS('9.1.0'), { browsers: ['ios_saf >= 9.2'] }))
+    .toBeTruthy()  // <-- should actually be falsy
 })
