@@ -230,7 +230,7 @@ const matchesUA = (uaString, opts = {}) => {
   }
   const browsers = browserslist(normalizedQuery, {
     env: opts.env,
-    path: process.cwd()
+    path: opts.path || process.cwd()
   })
   const parsedBrowsers = parseBrowsersList(browsers)
 
