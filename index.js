@@ -169,30 +169,36 @@ function normalizeQuery(query) {
 }
 
 const parseBrowsersList = (browsersList) => {
-  const browsers = browsersList.map(browser => {
-    const [browserName, browserVersion] = browser.split(' ')
+  const browsers = browsersList
+    .map(browser => {
+      const [name, version] = browser.split(' ')
+      return { name, version }
+    })
+    // #38 Filter out non-numerical browser versions
+    .filter(browser => browser.version !== 'TP')
+    .map(browser => {
 
-    let normalizedName = browserName
-    let normalizedVersion = browserVersion
+      let normalizedName = browser.name
+      let normalizedVersion = browser.version
 
-    if (browserName in browserNameMap) {
-      normalizedName = browserNameMap[browserName]
-    }
-
-    // browserslist might return ranges (9.0-9.2), unwrap them
-    // see https://github.com/browserslist/browserslist-useragent/issues/41
-    if (browserVersion.indexOf('-') > 0) {
-      return generateSemversInRange(browserVersion).map(version => ({
-        family: normalizedName,
-        version,
-      }))
-    } else {
-      return {
-        family: normalizedName,
-        version: normalizedVersion,
+      if (browser.name in browserNameMap) {
+        normalizedName = browserNameMap[browser.name]
       }
-    }
-  })
+
+      // browserslist might return ranges (9.0-9.2), unwrap them
+      // see https://github.com/browserslist/browserslist-useragent/issues/41
+      if (browser.version.indexOf('-') > 0) {
+        return generateSemversInRange(browser.version).map(version => ({
+          family: normalizedName,
+          version,
+        }))
+      } else {
+        return {
+          family: normalizedName,
+          version: normalizedVersion,
+        }
+      }
+    })
 
   return flatten(browsers);
 }

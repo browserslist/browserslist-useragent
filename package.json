@@ -19,8 +19,8 @@
     "build": "mkdir -p lib && babel index.js --out-file lib/index.js"
   },
   "dependencies": {
-    "browserslist": "^4.6.6",
-    "semver": "^6.3.0",
+    "browserslist": "^4.12.0",
+    "semver": "^7.3.2",
     "useragent": "^2.3.0"
   },
   "devDependencies": {

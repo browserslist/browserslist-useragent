@@ -314,3 +314,14 @@ it('can deal with version ranges (if returned by browserslist)', () => {
     .toBeTruthy()  // <-- should actually be falsy
 
 })
+
+it('can deal with non-numerical version numbers returned by browserslist for safari technology preview', () => {
+  expect(
+    matchesUA(ua.safari('13.1.0'), {
+      browsers: ['unreleased Safari versions'],
+      ignorePatch: true,
+      ignoreMinor: true,
+      allowHigherVersions: true,
+    }))
+    .toBeTruthy()
+})
