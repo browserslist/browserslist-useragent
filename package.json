@@ -5,6 +5,9 @@
   "main": "lib/index.js",
   "repository": "https://github.com/pastelsky/browserslist-useragent",
   "author": "Shubham Kanodia <shubham.kanodia10@gmail.com>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "license": "MIT",
   "files": [
     "./lib/index.js"
