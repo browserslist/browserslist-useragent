@@ -35,6 +35,9 @@ function resolveUserAgent(uaString) {
   // Yandex Browser uses Chromium as the udnerlying engine
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
 
+  // Yandex Search uses Chromium as the udnerlying engine
+  strippedUA = strippedUA.replace(/YandexSearch\/(\d+\.?)+/g, '');
+
   // Facebook Webview
   strippedUA = strippedUA.replace(/FB_IAB/g, '').replace(/FBAN\/FBIOS/g, '');
 
