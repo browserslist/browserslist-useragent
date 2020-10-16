@@ -117,22 +117,7 @@ function resolveUserAgent(uaString) {
 
 // Convert version to a semver value.
 // 2.5 -> 2.5.0; 1 -> 1.0.0;
-const semverify = (version) => {
-  if (
-    typeof version === 'string' &&
-    semver.valid(version, { loose: true })
-  ) {
-    return semver.parse(version, { loose: true }).version
-  }
-
-  const split = version.toString().split('.')
-
-  while (split.length < 3) {
-    split.push('0')
-  }
-
-  return split.join('.')
-}
+const semverify = (version) => semver.coerce(version, { loose: true }).version;
 
 function flatten(arr) {
   return arr.reduce(function (flat, toFlatten) {

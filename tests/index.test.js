@@ -296,6 +296,9 @@ it('parses semvers liberally', () => {
   expect(
     matchesUA('Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.0.0001', { browsers: ['opera >= 12'] }))
     .toBeTruthy()
+
+  expect(matchesUA('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/55.0a1', { browsers: ['firefox > 50'], allowHigherVersions: false }))
+    .toBeTruthy()
 })
 
 it('can deal with version ranges (if returned by browserslist)', () => {
