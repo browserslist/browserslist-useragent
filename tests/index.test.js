@@ -7,6 +7,7 @@ const CustomUserAgentString = {
   SAMSUNG_BROWSER_7_2: 'Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.2 Chrome/63.0.3239.111 Mobile Safari/537.36',
   FACEBOOK_WEBVIEW_CHROME_ANDROID: 'Mozilla/5.0 (Linux; Android 8.0.0; LG-H930 Build/OPR1.170623.026; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/69.0.3497.100 Mobile Safari/537.36 [FB_IAB/Orca-Android;FBAV/189.0.0.27.99;]',
   FACEBOOK_WEBVIEW_IOS: 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12D508 [FBAN/FBIOS;FBAV/27.0.0.10.12;FBBV/8291884;FBDV/iPhone7,1;FBMD/iPhone;FBSN/iPhone OS;FBSV/8.2;FBSS/3; FBCR/vodafoneIE;FBID/phone;FBLC/en_US;FBOP/5]',
+  ELECTRON: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_4_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Electron/12.0.13 Safari/537.36'
 }
 
 it('normalizes queries properly', () => {
@@ -173,6 +174,15 @@ it('resolves samsung browser properly', () => {
     .toEqual({
       family: 'Samsung',
       version: '7.2.0'
+    })
+})
+
+it('resolves electron properly', () => {
+  // Electron 12 -> Chrome 89
+  expect(resolveUserAgent(CustomUserAgentString.ELECTRON))
+    .toEqual({
+      family: 'Chrome',
+      version: '89'
     })
 })
 
