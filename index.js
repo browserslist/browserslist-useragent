@@ -224,6 +224,11 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
 }
 
 const matchesUA = (uaString, opts = {}) => {
+  // bail out early if the user agent is invalid
+  if (!uaString) {
+    return false;
+  }
+
   let normalizedQuery
   if (opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
