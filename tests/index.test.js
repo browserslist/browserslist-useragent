@@ -325,3 +325,16 @@ it('can deal with non-numerical version numbers returned by browserslist for saf
     }))
     .toBeTruthy()
 })
+
+it('gracefully fails on invalid inputs', () => {
+  expect(
+    matchesUA(undefined))
+    .toBeFalsy()
+
+  expect(
+    matchesUA(null))
+    .toBeFalsy()
+})
+
+
+
