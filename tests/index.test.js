@@ -317,7 +317,7 @@ it('can deal with version ranges (if returned by browserslist)', () => {
 
 it('can deal with non-numerical version numbers returned by browserslist for safari technology preview', () => {
   expect(
-    matchesUA(ua.safari('13.1.0'), {
+    matchesUA(ua.safari('18.1.0'), {
       browsers: ['unreleased Safari versions'],
       ignorePatch: true,
       ignoreMinor: true,
