@@ -124,7 +124,7 @@ function resolveUserAgent(uaString) {
   }
 
   if (parsedUA.family === 'Electron') {
-    const electronVersion = [ parsedUA.major, parsedUA.minor ].join('.')
+    const electronVersion = [parsedUA.major, parsedUA.minor].join('.')
     return {
       family: 'Chrome',
       version: e2c[electronVersion],

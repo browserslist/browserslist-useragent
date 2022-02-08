@@ -15,7 +15,7 @@ const CustomUserAgentString = {
     'Mozilla/5.0 (iPhone; CPU iPhone OS 8_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12D508 [FBAN/FBIOS;FBAV/27.0.0.10.12;FBBV/8291884;FBDV/iPhone7,1;FBMD/iPhone;FBSN/iPhone OS;FBSV/8.2;FBSS/3; FBCR/vodafoneIE;FBID/phone;FBLC/en_US;FBOP/5]',
   OPERA_MOBILE:
     'Opera/9.80 (Android 2.3.3; Linux; Opera Mobi/ADR-1111101157; U; es-ES) Presto/2.9.201 Version/11.50',
-  ELECTRON: 
+  ELECTRON:
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_4_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Electron/12.0.13 Safari/537.36',
 }
 
@@ -188,11 +188,10 @@ it('resolves samsung browser properly', () => {
 
 it('resolves electron properly', () => {
   // Electron 12 -> Chrome 89
-  expect(resolveUserAgent(CustomUserAgentString.ELECTRON))
-    .toEqual({
-      family: 'Chrome',
-      version: '89'
-    })
+  expect(resolveUserAgent(CustomUserAgentString.ELECTRON)).toEqual({
+    family: 'Chrome',
+    version: '89',
+  })
 })
 
 it('detects if browserslist matches UA', () => {

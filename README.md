@@ -56,7 +56,7 @@ matchesUA(
 - Safari Desktop as `Safari`
 - IE as `ie` | `ie_mob`
 - Edge as `Edge`
-- OperaMobile as `OperaMobile`
+- Electron as `Electron`
 
 PRs to add more _browserslist supported_ browsers are welcome 👋
 
