@@ -31,13 +31,19 @@ function resolveUserAgent(uaString) {
   // renderer
   // @see https://github.com/Financial-Times/polyfill-service/pull/416
 
-  let strippedUA = uaString.replace(/((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/, '')
+  let strippedUA = uaString.replace(
+    /((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/,
+    ''
+  )
 
   // Yandex Browser uses Chromium as the udnerlying engine
   strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
 
+  // Yandex Search uses Chromium as the udnerlying engine
+  strippedUA = strippedUA.replace(/YandexSearch\/(\d+\.?)+/g, '')
+
   // Facebook Webview
-  strippedUA = strippedUA.replace(/FB_IAB/g, '').replace(/FBAN\/FBIOS/g, '');
+  strippedUA = strippedUA.replace(/FB_IAB/g, '').replace(/FBAN\/FBIOS/g, '')
 
   const parsedUA = useragent.parse(strippedUA)
 
@@ -58,11 +64,11 @@ function resolveUserAgent(uaString) {
   if (parsedUA.os.family === 'iOS') {
     return {
       family: 'iOS',
-      version: [parsedUA.os.major, parsedUA.os.minor,
-        parsedUA.os.patch].join('.'),
+      version: [parsedUA.os.major, parsedUA.os.minor, parsedUA.os.patch].join(
+        '.'
+      ),
     }
   }
-
 
   // Case C: The caniuse database does not contain
   // historical browser versions for so called `minor`
@@ -78,6 +84,13 @@ function resolveUserAgent(uaString) {
   ) {
     return {
       family: 'Chrome',
+      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
+  if (parsedUA.family === 'Opera Mobile') {
+    return {
+      family: 'OperaMobile',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
     }
   }
@@ -126,27 +139,14 @@ function resolveUserAgent(uaString) {
 
 // Convert version to a semver value.
 // 2.5 -> 2.5.0; 1 -> 1.0.0;
-const semverify = (version) => {
-  if (
-    typeof version === 'string' &&
-    semver.valid(version, { loose: true })
-  ) {
-    return semver.parse(version, { loose: true }).version
-  }
-
-  const split = version.toString().split('.')
-
-  while (split.length < 3) {
-    split.push('0')
-  }
-
-  return split.join('.')
-}
+const semverify = (version) => semver.coerce(version, { loose: true }).version
 
 function flatten(arr) {
   return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-  }, []);
+    return flat.concat(
+      Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten
+    )
+  }, [])
 }
 
 // 10.0-10.2 -> 10.0, 10.1, 10.2
@@ -154,15 +154,15 @@ function generateSemversInRange(versionRange) {
   const [start, end] = versionRange.split('-')
   const startSemver = semverify(start)
   const endSemver = semverify(end)
-  const versionsInRange = [];
-  let curVersion = startSemver;
+  const versionsInRange = []
+  let curVersion = startSemver
 
   while (semver.gte(endSemver, curVersion)) {
     versionsInRange.push(curVersion)
     curVersion = semver.inc(curVersion, 'minor')
   }
 
-  return versionsInRange;
+  return versionsInRange
 }
 
 function normalizeQuery(query) {
@@ -179,14 +179,13 @@ function normalizeQuery(query) {
 
 const parseBrowsersList = (browsersList) => {
   const browsers = browsersList
-    .map(browser => {
+    .map((browser) => {
       const [name, version] = browser.split(' ')
       return { name, version }
     })
     // #38 Filter out non-numerical browser versions
-    .filter(browser => browser.version !== 'TP')
-    .map(browser => {
-
+    .filter((browser) => browser.version !== 'TP')
+    .map((browser) => {
       let normalizedName = browser.name
       let normalizedVersion = browser.version
 
@@ -197,7 +196,7 @@ const parseBrowsersList = (browsersList) => {
       // browserslist might return ranges (9.0-9.2), unwrap them
       // see https://github.com/browserslist/browserslist-useragent/issues/41
       if (browser.version.indexOf('-') > 0) {
-        return generateSemversInRange(browser.version).map(version => ({
+        return generateSemversInRange(browser.version).map((version) => ({
           family: normalizedName,
           version,
         }))
@@ -209,7 +208,7 @@ const parseBrowsersList = (browsersList) => {
       }
     })
 
-  return flatten(browsers);
+  return flatten(browsers)
 }
 
 const compareBrowserSemvers = (versionA, versionB, options) => {
@@ -233,14 +232,20 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
 }
 
 const matchesUA = (uaString, opts = {}) => {
+  // bail out early if the user agent is invalid
+  if (!uaString) {
+    return false
+  }
+
   let normalizedQuery
   if (opts.browsers) {
     normalizedQuery = opts.browsers.map(normalizeQuery)
   }
   const browsers = browserslist(normalizedQuery, {
     env: opts.env,
-    path: opts.path || process.cwd()
+    path: opts.path || process.cwd(),
   })
+
   const parsedBrowsers = parseBrowsersList(browsers)
 
   const resolvedUserAgent = resolveUserAgent(uaString)
@@ -251,9 +256,10 @@ const matchesUA = (uaString, opts = {}) => {
     ...opts,
   }
 
-  return parsedBrowsers.some(browser => {
+  return parsedBrowsers.some((browser) => {
     return (
-      browser.family.toLowerCase() === resolvedUserAgent.family.toLocaleLowerCase() &&
+      browser.family.toLowerCase() ===
+        resolvedUserAgent.family.toLocaleLowerCase() &&
       compareBrowserSemvers(resolvedUserAgent.version, browser.version, options)
     )
   })
@@ -264,4 +270,3 @@ module.exports = {
   resolveUserAgent,
   normalizeQuery,
 }
-
