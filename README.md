@@ -1,6 +1,6 @@
 # Browserslist Useragent
 
-[![Travis](https://img.shields.io/travis/browserslist/browserslist-useragent.svg)](https://travis-ci.org/pastelsky/browserslist-useragent)
+![build](https://github.com/pastelsky/browserslist-useragent/actions/workflows/main.yml/badge.svg)
 [![npm](https://img.shields.io/npm/v/browserslist-useragent.svg)](https://www.npmjs.com/package/browserslist-useragent)
 
 <img align="right" width="120" height="120"
