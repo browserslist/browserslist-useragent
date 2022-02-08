@@ -1335,6 +1335,7 @@ __metadata:
     electron-to-chromium: ^1.4.67
     jest: ^23.6.0
     prettier: ^2.5.1
+    semver: ^7.3.5
     useragent: ^2.3.0
     useragent-generator: ^1.1.1-amkt-22079-finish.0
     yamlparser: ^0.0.2
