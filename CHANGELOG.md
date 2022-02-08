@@ -1,3 +1,5 @@
+Please use [github releases page](https://github.com/browserslist/browserslist-useragent/releases) to see changes for future versions.
+
 # v3.0.0
 
 - **Fix**: Don't crash when `options` parameter is not specified
