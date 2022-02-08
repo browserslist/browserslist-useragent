@@ -1,6 +1,7 @@
 const browserslist = require('browserslist')
 const semver = require('semver')
 const useragent = require('useragent')
+const e2c = require('electron-to-chromium/versions')
 
 // @see https://github.com/ai/browserslist#browsers
 
@@ -119,6 +120,14 @@ function resolveUserAgent(uaString) {
     return {
       family: 'ExplorerMobile',
       version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    }
+  }
+
+  if (parsedUA.family === 'Electron') {
+    const electronVersion = [ parsedUA.major, parsedUA.minor ].join('.')
+    return {
+      family: 'Chrome',
+      version: e2c[electronVersion],
     }
   }
 
