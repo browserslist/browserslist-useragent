@@ -1337,6 +1337,7 @@ __metadata:
     prettier: ^2.5.1
     useragent: ^2.3.0
     useragent-generator: ^1.1.1-amkt-22079-finish.0
+    yamlparser: ^0.0.2
   languageName: unknown
   linkType: soft
 
@@ -6324,7 +6325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yamlparser@npm:0.0.x":
+"yamlparser@npm:0.0.x, yamlparser@npm:^0.0.2":
   version: 0.0.2
   resolution: "yamlparser@npm:0.0.2"
   checksum: 9f09b0af2bc24f22153250b0eac88b491d59c38449fbfec665d13e746941e3a089f47c592a9ca8d9f0aab8b7014fe813642f955de93d23a179f05fe1e29e6f3e

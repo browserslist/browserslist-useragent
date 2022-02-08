@@ -24,7 +24,8 @@
   "dependencies": {
     "browserslist": "^4.19.1",
     "electron-to-chromium": "^1.4.67",
-    "useragent": "^2.3.0"
+    "useragent": "^2.3.0",
+    "yamlparser": "^0.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
