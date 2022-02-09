@@ -225,6 +225,9 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
   }
 
   if (options.allowHigherVersions) {
+    if (semverifiedB === "TP.0.0") {
+      return semverifiedA === semverifiedB;
+    }
     return semver.gte(semverifiedA, semverifiedB)
   } else {
     return semver.satisfies(semverifiedA, referenceVersion)
