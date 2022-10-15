@@ -10,7 +10,9 @@
   },
   "license": "MIT",
   "files": [
-    "./lib/index.js"
+    "./lib/index.js",
+    "./lib/index.d.ts",
+    "tsconfig.json"
   ],
   "engines": {
     "node": ">= 6.x.x"
@@ -18,30 +20,30 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit",
     "prepublish": "yarn run build",
-    "build": "mkdir -p lib && babel index.js --out-file lib/index.js"
+    "build": "mkdir -p lib && tsc"
   },
   "dependencies": {
-    "electron-to-chromium": "^1.4.67",
     "semver": "^7.3.5",
-    "useragent": "^2.3.0",
-    "yamlparser": "^0.0.2"
+    "ua-parser-js": "^1.0.32"
   },
   "peerDependencies": {
     "browserslist": "^4.0.0"
   },
   "devDependencies": {
-    "browserslist": "^4.19.1",
+    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/jest": "^29.1.2",
+    "@types/node": "^18.11.0",
+    "@types/semver": "^7.3.12",
+    "@types/ua-parser-js": "^0.7.36",
+    "@types/useragent": "^2.3.1",
     "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "jest": "^23.6.0",
+    "browserslist": "^4.19.1",
+    "jest": "^29.2.0",
     "prettier": "^2.5.1",
+    "typescript": "^4.8.4",
     "useragent-generator": "^1.1.1-amkt-22079-finish.0"
-  },
-  "jest": {
-    "projects": [
-      "<rootDir>/external-browserslists/package-json"
-    ]
   }
 }

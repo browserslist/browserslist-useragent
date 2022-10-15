@@ -1,14 +1,13 @@
-const browserslist = require('browserslist')
-const semver = require('semver')
-const useragent = require('useragent')
-const e2c = require('electron-to-chromium/versions')
+import browserslist from 'browserslist';
+import semver from 'semver';
+import UAParser from 'ua-parser-js';
 
 // @see https://github.com/ai/browserslist#browsers
 
 // map of equivalent browsers,
 // see https://github.com/ai/browserslist/issues/156
 
-const browserNameMap = {
+const browserNameMap: Record<string, string> = {
   bb: 'BlackBerry',
   and_chr: 'Chrome',
   ChromeAndroid: 'Chrome',
@@ -24,35 +23,18 @@ const browserNameMap = {
   and_uc: 'UCAndroid',
 }
 
-function resolveUserAgent(uaString) {
-  // Chrome and Opera on iOS uses a UIWebView of the underlying platform to render
-  // content, by stripping the CriOS or OPiOS strings the useragent parser will alias the
-  // user agent to ios_saf for the UIWebView, which is closer to the actual
-  // renderer
-  // @see https://github.com/Financial-Times/polyfill-service/pull/416
+function resolveUserAgent(uaString: string): { family: string | null, version: string | null } {
+  const parsedUA = UAParser(uaString)
+  const parsedBrowserVersion = semverify(parsedUA.browser.version)
+  const parsedOSVersion = semverify(parsedUA.os.version)
+  const parsedEngineVersion = semverify(parsedUA.engine.version)
 
-  let strippedUA = uaString.replace(
-    /((CriOS|OPiOS)\/(\d+)\.(\d+)\.(\d+)\.(\d+))/,
-    ''
-  )
-
-  // Yandex Browser uses Chromium as the udnerlying engine
-  strippedUA = strippedUA.replace(/YaBrowser\/(\d+\.?)+/g, '')
-
-  // Yandex Search uses Chromium as the udnerlying engine
-  strippedUA = strippedUA.replace(/YandexSearch\/(\d+\.?)+/g, '')
-
-  // Facebook Webview
-  strippedUA = strippedUA.replace(/FB_IAB/g, '').replace(/FBAN\/FBIOS/g, '')
-
-  const parsedUA = useragent.parse(strippedUA)
-
-  // Case A: For Safari, Chrome and others browsers on iOS
-  // that report as Safari after stripping tags
-  if (parsedUA.family.includes('Safari') && parsedUA.os.family === 'iOS') {
+  // Case A: For Safari on iOS, the use the browser version
+  if (
+    parsedUA.browser.name === 'Safari' && parsedUA.os.name === 'iOS') {
     return {
       family: 'iOS',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+      version: parsedBrowserVersion,
     }
   }
 
@@ -61,111 +43,121 @@ function resolveUserAgent(uaString) {
   // version. This is based on the assumption that the
   // underlying Safari Engine used will be *atleast* equal
   // to the iOS version it's running on.
-  if (parsedUA.os.family === 'iOS') {
+  if (parsedUA.os.name === 'iOS') {
     return {
       family: 'iOS',
-      version: [parsedUA.os.major, parsedUA.os.minor, parsedUA.os.patch].join(
-        '.'
-      ),
+      version: parsedOSVersion
     }
   }
 
-  // Case C: The caniuse database does not contain
-  // historical browser versions for so called `minor`
-  // browsers like Chrome for Android, Firefox for Android etc
-  // In this case, we proxy to the desktop version
-  // @see https://github.com/Fyrd/caniuse/issues/3518
-
   if (
-    parsedUA.family.includes('Chrome Mobile') ||
-    parsedUA.family.includes('Chrome Mobile WebView') ||
-    parsedUA.family.includes('Chromium') ||
-    parsedUA.family.includes('HeadlessChrome')
+    (parsedUA.browser.name === 'Opera' && parsedUA.device.type === 'mobile') ||
+    parsedUA.browser.name === 'Opera Mobi'
+  ) {
+    return {
+      family: 'OperaMobile',
+      version: parsedBrowserVersion
+    }
+  }
+
+  if (parsedUA.browser.name === 'Samsung Browser') {
+    return {
+      family: 'Samsung',
+      version: parsedBrowserVersion
+    }
+  }
+
+  if (parsedUA.browser.name === 'IE') {
+    return {
+      family: 'Explorer',
+      version: parsedBrowserVersion
+    }
+  }
+
+  if (parsedUA.browser.name === 'IEMobile') {
+    return {
+      family: 'ExplorerMobile',
+      version: parsedBrowserVersion
+    }
+  }
+
+  // Use engine version for gecko-based browsers
+  if (parsedUA.engine.name === 'Gecko') {
+    return {
+      family: 'Firefox',
+      version: parsedEngineVersion
+    }
+  }
+
+  // Use engine version for blink-based browsers
+  if (parsedUA.engine.name === 'Blink') {
+    return {
+      family: 'Chrome',
+      version: parsedEngineVersion
+    }
+  }
+
+  // Chrome based browsers pre-blink (WebKit)
+  if (
+    parsedUA.browser.name &&
+    ['Chrome', 'Chromium', 'Chrome WebView', 'Chrome Headless'].includes(parsedUA.browser.name)
   ) {
     return {
       family: 'Chrome',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+      version: parsedBrowserVersion
     }
   }
 
-  if (parsedUA.family === 'Opera Mobile') {
+  if (parsedUA.browser.name === 'Android Browser') {
+    // Versions prior to Blink were based
+    // on the OS version. Only after this
+    // did android start using system chrome for web-views
     return {
-      family: 'OperaMobile',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'Samsung Internet') {
-    return {
-      family: 'Samsung',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'Firefox Mobile') {
-    return {
-      family: 'Firefox',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'IE') {
-    return {
-      family: 'Explorer',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'IE Mobile') {
-    return {
-      family: 'ExplorerMobile',
-      version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
-    }
-  }
-
-  if (parsedUA.family === 'Electron') {
-    const electronVersion = [parsedUA.major, parsedUA.minor].join('.')
-    return {
-      family: 'Chrome',
-      version: e2c[electronVersion],
+      family: 'Android',
+      version: parsedOSVersion
     }
   }
 
   return {
-    family: parsedUA.family,
-    version: [parsedUA.major, parsedUA.minor, parsedUA.patch].join('.'),
+    family: parsedUA.browser.name || null,
+    version: parsedBrowserVersion
   }
 }
 
 // Convert version to a semver value.
 // 2.5 -> 2.5.0; 1 -> 1.0.0;
-const semverify = (version) => semver.coerce(version, { loose: true }).version
-
-function flatten(arr) {
-  return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(
-      Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten
-    )
-  }, [])
+const semverify = (version: string | undefined | null) => {
+  if (!version) {
+    return null
+  }
+  const cooerced = semver.coerce(version, { loose: true })
+  if (!cooerced) {
+    return null
+  }
+  return cooerced.version
 }
 
 // 10.0-10.2 -> 10.0, 10.1, 10.2
-function generateSemversInRange(versionRange) {
+function generateSemversInRange(versionRange: string) {
   const [start, end] = versionRange.split('-')
   const startSemver = semverify(start)
   const endSemver = semverify(end)
+
+  if (!startSemver || !endSemver) {
+    return []
+  }
   const versionsInRange = []
   let curVersion = startSemver
 
   while (semver.gte(endSemver, curVersion)) {
     versionsInRange.push(curVersion)
-    curVersion = semver.inc(curVersion, 'minor')
+    curVersion = semver.inc(curVersion, 'minor') as string
   }
 
   return versionsInRange
 }
 
-function normalizeQuery(query) {
+function normalizeQuery(query: string) {
   let normalizedQuery = query
   const regex = `(${Object.keys(browserNameMap).join('|')})`
   const match = query.match(new RegExp(regex))
@@ -177,7 +169,7 @@ function normalizeQuery(query) {
   return normalizedQuery
 }
 
-const parseBrowsersList = (browsersList) => {
+const parseBrowsersList = (browsersList: string[]): { family: string, version: string | null }[] => {
   const browsers = browsersList
     .map((browser) => {
       const [name, version] = browser.split(' ')
@@ -208,12 +200,16 @@ const parseBrowsersList = (browsersList) => {
       }
     })
 
-  return flatten(browsers)
+  return browsers.flat()
 }
 
-const compareBrowserSemvers = (versionA, versionB, options) => {
+const compareBrowserSemvers = (versionA: string, versionB: string, options: Options) => {
   const semverifiedA = semverify(versionA)
   const semverifiedB = semverify(versionB)
+
+  if (!semverifiedA || !semverifiedB) {
+    return false
+  }
   let referenceVersion = semverifiedB
 
   if (options.ignorePatch) {
@@ -231,7 +227,16 @@ const compareBrowserSemvers = (versionA, versionB, options) => {
   }
 }
 
-const matchesUA = (uaString, opts = {}) => {
+type Options = {
+  browsers?: string[],
+  env?: string,
+  path?: string,
+  ignoreMinor?: boolean,
+  ignorePatch?: boolean,
+  allowHigherVersions?: boolean
+}
+
+const matchesUA = (uaString: string, opts: Options = {}) => {
   // bail out early if the user agent is invalid
   if (!uaString) {
     return false
@@ -246,7 +251,9 @@ const matchesUA = (uaString, opts = {}) => {
     path: opts.path || process.cwd(),
   })
 
+
   const parsedBrowsers = parseBrowsersList(browsers)
+
 
   const resolvedUserAgent = resolveUserAgent(uaString)
 
@@ -257,15 +264,20 @@ const matchesUA = (uaString, opts = {}) => {
   }
 
   return parsedBrowsers.some((browser) => {
+    if (!resolvedUserAgent.family) return false
+    if (!resolvedUserAgent.version) return false
+    if (!browser.version) return false
+
+
     return (
       browser.family.toLowerCase() ===
-        resolvedUserAgent.family.toLocaleLowerCase() &&
+      resolvedUserAgent.family.toLocaleLowerCase() &&
       compareBrowserSemvers(resolvedUserAgent.version, browser.version, options)
     )
   })
 }
 
-module.exports = {
+export {
   matchesUA,
   resolveUserAgent,
   normalizeQuery,

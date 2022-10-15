@@ -15,8 +15,12 @@ but you can also specify the same using the `options` parameter.
 
 ## Installation
 
+Note, `browserslist` is a peer dependency, so make sure you have that installed in your project.
+
 ```bash
 npm install browserslist-useragent
+# or 
+yarn add browserslist-useragent
 ```
 
 ## Usage
