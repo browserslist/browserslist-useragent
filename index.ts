@@ -24,14 +24,14 @@ const browserNameMap: Record<string, string> = {
 }
 
 function resolveUserAgent(uaString: string): { family: string | null, version: string | null } {
-  const parsedUANew = UAParser(uaString)
-  const parsedBrowserVersion = semverify(parsedUANew.browser.version)
-  const parsedOSVersion = semverify(parsedUANew.os.version)
-  const parsedEngineVersion = semverify(parsedUANew.engine.version)
+  const parsedUA = UAParser(uaString)
+  const parsedBrowserVersion = semverify(parsedUA.browser.version)
+  const parsedOSVersion = semverify(parsedUA.os.version)
+  const parsedEngineVersion = semverify(parsedUA.engine.version)
 
   // Case A: For Safari on iOS, the use the browser version
   if (
-    parsedUANew.browser.name === 'Safari' && parsedUANew.os.name === 'iOS') {
+    parsedUA.browser.name === 'Safari' && parsedUA.os.name === 'iOS') {
     return {
       family: 'iOS',
       version: parsedBrowserVersion,
@@ -43,7 +43,7 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
   // version. This is based on the assumption that the
   // underlying Safari Engine used will be *atleast* equal
   // to the iOS version it's running on.
-  if (parsedUANew.os.name === 'iOS') {
+  if (parsedUA.os.name === 'iOS') {
     return {
       family: 'iOS',
       version: parsedOSVersion
@@ -51,8 +51,8 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
   }
 
   if (
-    (parsedUANew.browser.name === 'Opera' && parsedUANew.device.type === 'mobile') ||
-    parsedUANew.browser.name === 'Opera Mobi'
+    (parsedUA.browser.name === 'Opera' && parsedUA.device.type === 'mobile') ||
+    parsedUA.browser.name === 'Opera Mobi'
   ) {
     return {
       family: 'OperaMobile',
@@ -60,21 +60,21 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
     }
   }
 
-  if (parsedUANew.browser.name === 'Samsung Browser') {
+  if (parsedUA.browser.name === 'Samsung Browser') {
     return {
       family: 'Samsung',
       version: parsedBrowserVersion
     }
   }
 
-  if (parsedUANew.browser.name === 'IE') {
+  if (parsedUA.browser.name === 'IE') {
     return {
       family: 'Explorer',
       version: parsedBrowserVersion
     }
   }
 
-  if (parsedUANew.browser.name === 'IEMobile') {
+  if (parsedUA.browser.name === 'IEMobile') {
     return {
       family: 'ExplorerMobile',
       version: parsedBrowserVersion
@@ -82,7 +82,7 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
   }
 
   // Use engine version for gecko-based browsers
-  if (parsedUANew.engine.name === 'Gecko') {
+  if (parsedUA.engine.name === 'Gecko') {
     return {
       family: 'Firefox',
       version: parsedEngineVersion
@@ -90,14 +90,25 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
   }
 
   // Use engine version for blink-based browsers
-  if (parsedUANew.engine.name === 'Blink') {
+  if (parsedUA.engine.name === 'Blink') {
     return {
       family: 'Chrome',
       version: parsedEngineVersion
     }
   }
 
-  if (parsedUANew.browser.name === 'Android Browser') {
+  // Chrome based browsers pre-blink (WebKit)
+  if (
+    parsedUA.browser.name &&
+    ['Chrome', 'Chromium', 'Chrome WebView', 'Chrome Headless'].includes(parsedUA.browser.name)
+  ) {
+    return {
+      family: 'Chrome',
+      version: parsedBrowserVersion
+    }
+  }
+
+  if (parsedUA.browser.name === 'Android Browser') {
     // Versions prior to Blink were based
     // on the OS version. Only after this
     // did android start using system chrome for web-views
@@ -108,7 +119,7 @@ function resolveUserAgent(uaString: string): { family: string | null, version: s
   }
 
   return {
-    family: parsedUANew.browser.name || null,
+    family: parsedUA.browser.name || null,
     version: parsedBrowserVersion
   }
 }
@@ -132,7 +143,7 @@ function generateSemversInRange(versionRange: string) {
   const startSemver = semverify(start)
   const endSemver = semverify(end)
 
-  if(!startSemver || !endSemver) {
+  if (!startSemver || !endSemver) {
     return []
   }
   const versionsInRange = []
@@ -196,7 +207,7 @@ const compareBrowserSemvers = (versionA: string, versionB: string, options: Opti
   const semverifiedA = semverify(versionA)
   const semverifiedB = semverify(versionB)
 
-  if(!semverifiedA || !semverifiedB) {
+  if (!semverifiedA || !semverifiedB) {
     return false
   }
   let referenceVersion = semverifiedB
@@ -255,7 +266,7 @@ const matchesUA = (uaString: string, opts: Options = {}) => {
   return parsedBrowsers.some((browser) => {
     if (!resolvedUserAgent.family) return false
     if (!resolvedUserAgent.version) return false
-    if(!browser.version) return false
+    if (!browser.version) return false
 
 
     return (

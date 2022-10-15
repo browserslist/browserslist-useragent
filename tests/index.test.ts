@@ -143,8 +143,6 @@ it('resolves chrome/android properly', () => {
     })
   ).toBeTruthy()
 
-  console.log('ua is ',resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID))
-
   expect(
     resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID)
   ).toEqual({
