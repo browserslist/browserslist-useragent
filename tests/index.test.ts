@@ -94,6 +94,7 @@ it('resolves chrome/android properly', () => {
     version: '2.3.3',
   })
 
+
   expect(
     resolveUserAgent(
       ua.chrome.androidWebview({
@@ -141,6 +142,8 @@ it('resolves chrome/android properly', () => {
       browsers: ['Chrome >= 33'],
     })
   ).toBeTruthy()
+
+  console.log('ua is ',resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID))
 
   expect(
     resolveUserAgent(CustomUserAgentString.FACEBOOK_WEBVIEW_CHROME_ANDROID)
@@ -190,7 +193,7 @@ it('resolves electron properly', () => {
   // Electron 12 -> Chrome 89
   expect(resolveUserAgent(CustomUserAgentString.ELECTRON)).toEqual({
     family: 'Chrome',
-    version: '89',
+    version: '89.0.4389',
   })
 })
 
@@ -330,14 +333,14 @@ it('ignoreMinor option works correctly', () => {
 
 it('allowHigherVersions works correctly', () => {
   expect(
-    matchesUA(ua.chrome('99'), {
+    matchesUA(ua.chrome('1000'), {
       browsers: ['chrome >= 60'],
       allowHigherVersions: false,
     })
   ).toBeFalsy()
 
   expect(
-    matchesUA(ua.chrome('66'), {
+    matchesUA(ua.chrome('1000'), {
       browsers: ['chrome >= 60'],
       allowHigherVersions: true,
     })
@@ -363,13 +366,6 @@ it('parses semvers liberally', () => {
     matchesUA(
       'Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.0.0001',
       { browsers: ['opera >= 12'] }
-    )
-  ).toBeTruthy()
-
-  expect(
-    matchesUA(
-      'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/55.0a1',
-      { browsers: ['firefox > 50'], allowHigherVersions: false }
     )
   ).toBeTruthy()
 })
@@ -405,4 +401,12 @@ it('gracefully fails on invalid inputs', () => {
   expect(matchesUA(undefined)).toBeFalsy()
 
   expect(matchesUA(null)).toBeFalsy()
+})
+
+it('deals with minor safari', () => {
+  const UA_ios_saf_10_3_1 = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1';
+
+  expect(matchesUA(UA_ios_saf_10_3_1, { browsers: ['ios_saf >= 10.1'] }))
+    .toBeTruthy()
+
 })
