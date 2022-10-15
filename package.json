@@ -22,13 +22,16 @@
     "build": "mkdir -p lib && babel index.js --out-file lib/index.js"
   },
   "dependencies": {
-    "browserslist": "^4.19.1",
     "electron-to-chromium": "^1.4.67",
     "semver": "^7.3.5",
     "useragent": "^2.3.0",
     "yamlparser": "^0.0.2"
   },
+  "peerDependencies": {
+    "browserslist": "^4.0.0"
+  },
   "devDependencies": {
+    "browserslist": "^4.19.1",
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
